@@ -59,3 +59,7 @@ keyby =
 
 # ----- export summary dataframe for GAMM analysis ----
 
+qsave(accel_sum, here("data-saved",
+                      "summary-accel-doy",
+                      "lmb_np_summary_accel_doy.qs"))
+
