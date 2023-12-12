@@ -4,10 +4,7 @@
   library(dplyr)
   library(here)
   library(lubridate)
-  library(ggplot2)
   library(qs)
-  library(sf)
-  library(tidyr)
 }
 # ---- Bring in non summarized lmb and smb data ----
 
