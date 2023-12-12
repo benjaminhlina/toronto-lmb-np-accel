@@ -1,0 +1,9 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# Toronto Harbour Accelormeter Telemetry Project - Largemouth Bass and Nothern Pike
+
+Code and data for manuscript focused whether an industrialized and
+impaired harobur front (i.e., Toronto Harbour) impacts habitat
+connectivity and activity (i.e., acceleration) of Largemouth Bass
+(*Micropterus salmoides*), and Northern Pike (*Esox lucius*).
