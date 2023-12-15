@@ -5,6 +5,7 @@
   library(here)
   library(lubridate)
   library(qs)
+  library(readr)
 }
 # ---- Bring in non summarized lmb and smb data ----
 
@@ -12,6 +13,17 @@ dat <- qread(here("data-raw",
                   "raw-lmb-np.qs"))
 glimpse(dat)
 
+
+fish_tag <- read_csv(here("data-raw",
+                          "Fish Data Master List_Nov2022.csv")) %>%
+  janitor::clean_names() %>%
+  mutate(
+    sn = as.character(sn)
+  )
+
+glimpse(fish_tag)
+
+fish_tag <- setDT(fish_tag)
 # ---- calculate day of year and month abbreviation ----
 # data.table is far more powerfull than dplyr
 dat[, c("doy", "month_abb") := list(
@@ -31,12 +43,32 @@ setkey(dat, sensorv.type)
 dat_accel <- dat[sensorv.type %in% c("Accel")]
 
 
-m <- dat_accel %>%
+
+accel_id <- dat_accel %>%
   distinct(transmitter_id)
+fish_id <- fish_tag %>%
+  filter(transmitter_model %in% "V13A-1x") %>%
+  distinct(printed_id)
 
+accel_id
+fish_id
 
-openxlsx::write.xlsx(m, here("data-raw",
-                             "transmitter_ids_2014-2016_THP.xlsx"))
+unique(fish_tag$transmitter_model)
+
+th_accel_id <- fish_tag %>%
+  # filter(transmitter_model %in% "V13A-1x") %>%
+  filter(printed_id %in% accel_id$transmitter_id)
+
+glimpse(th_accel_id)
+glimpse(dat_accel)
+
+th_accel <- th_accel_id %>%
+  dplyr::select(sn:transmitter_model, id_or_p_sensor_id,
+                pit_code, total_length, weight, sex,
+                date_tagged, location)
+#
+# openxlsx::write.xlsx(m, here("data-raw",
+#                              "transmitter_ids_2014-2016_THP.xlsx"))
 # look at what years to confirm we have the right years
 dat_accel %>%
   distinct(year)
