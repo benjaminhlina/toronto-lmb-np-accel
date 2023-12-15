@@ -28,6 +28,7 @@ dat_accel[, station_no := factor(station_no)]
 unique(dat_accel$station)
 glimpse(dat_accel)
 # ---- use mapp to loop through and export abacus plots -----
+
 dat_accel %>%
   split(.$animal_id) %>%
   map(~ ggsave(
@@ -38,8 +39,9 @@ dat_accel %>%
     width = 11,
     plot =
       ggplot(data = ., aes(x = detection_timestamp_EST, y = station)) +
-      geom_point(aes(fill = station), shape = 21, size = 3, alpha = 0.5) +
       geom_line(aes(group = 1)) + # we can remove line if it's distracting
+      geom_point(aes(fill = station), shape = 21, size = 3,
+                  alpha = 0.50) +
       scale_fill_viridis_d(begin = 0.25, end = 0.75,
                            option = "D", name = "Station") +
       theme_bw(
@@ -54,4 +56,31 @@ dat_accel %>%
         y = "Station")
   )
   )
-
+# jittered
+dat_accel %>%
+  split(.$animal_id) %>%
+  map(~ ggsave(
+    filename = here("plots",
+                    "abacus-plots",
+                    paste0(unique(.$animal_id),'_jitter.png')),
+    height = 7,
+    width = 11,
+    plot =
+      ggplot(data = ., aes(x = detection_timestamp_EST, y = station)) +
+      geom_line(aes(group = 1)) + # we can remove line if it's distracting
+      geom_jitter(aes(fill = station), shape = 21, size = 3,
+                  alpha = 0.50, height = 0.1) +
+      scale_fill_viridis_d(begin = 0.25, end = 0.75,
+                           option = "D", name = "Station") +
+      theme_bw(
+        base_size = 15
+      ) +
+      theme(panel.grid = element_blank(),
+            plot.title = element_text(hjust = 0.5)
+      ) +
+      labs(
+        title = paste("Fish ID:", unique(.$animal_id), sep = " "),
+        x = "Date",
+        y = "Station")
+  )
+  )
