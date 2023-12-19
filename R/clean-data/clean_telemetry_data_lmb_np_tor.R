@@ -50,6 +50,11 @@ fish_id <- fish_tag %>%
   filter(transmitter_model %in% "V13A-1x") %>%
   distinct(printed_id)
 
+
+glimpse(fish_tag)
+# fish_tag %>%
+#   filter(transmitter_model %in% "V13A-1x") %>%
+#   distinct(printed_id, id_or_p_sensor_id)
 accel_id
 fish_id
 
@@ -66,9 +71,15 @@ th_accel <- th_accel_id %>%
   dplyr::select(sn:transmitter_model, id_or_p_sensor_id,
                 pit_code, total_length, weight, sex,
                 date_tagged, location)
-#
-# openxlsx::write.xlsx(m, here("data-raw",
-#                              "transmitter_ids_2014-2016_THP.xlsx"))
+
+glimpse(th_accel)
+
+codes_spaces <- th_accel %>%
+  distinct(transmitter_model, printed_id, id_or_p_sensor_id)
+
+codes_spaces
+# openxlsx::write.xlsx(codes_spaces, here("data-raw",
+#                              "transmitter_ids_w_codespaces_2014-2016_THP.xlsx"))
 # look at what years to confirm we have the right years
 dat_accel %>%
   distinct(year)
