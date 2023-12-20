@@ -117,9 +117,23 @@ dat_accel <- dat_accel[th_accel, ]
 
 glimpse(dat_accel)
 
-# ----
+# ---- merge habitat data ----
+dat_accel %>%
+  distinct(station_no, station, glatos_array)
 
-# ---- need to convert acceleation data to  m/s2 ----
+glimpse(hab_rec)
+glimpse(hab_rec)
+
+setkey(dat_accel, glatos_array)
+setkey(hab_rec, code)
+
+
+
+
+# ---- merge tag slope and intercept ----
+
+
+# ----   convert acceleration data to  m/s2 ----
 
 
 
