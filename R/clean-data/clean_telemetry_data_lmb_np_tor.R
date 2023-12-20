@@ -10,6 +10,7 @@
 # ---- Bring in non summarized lmb and smb data ----
 
 dat <- qread(here("data-raw",
+                  "detection-data",
                   "raw-lmb-np.qs"))
 glimpse(dat)
 
