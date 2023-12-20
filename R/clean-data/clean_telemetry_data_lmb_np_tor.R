@@ -72,11 +72,21 @@ dat_accel %>%
 
 # look at accell data overall
 glimpse(dat_accel)
+glimpse(th_accel)
 
+# convert printed_id to character for merging
 
+th_accel[, printed_id := as.character(printed_id)]
 
+# ---- merge detection data with metadata
 
+setkey(dat_accel, transmitter_id)
+setkey(th_accel, printed_id)
+dat_accel <- dat_accel[th_accel, ]
 
+glimpse(dat_accel)
+
+# ----
 
 # ---- need to convert acceleation data to  m/s2 ----
 
