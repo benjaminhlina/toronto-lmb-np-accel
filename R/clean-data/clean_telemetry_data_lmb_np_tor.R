@@ -164,13 +164,38 @@ glimpse(hab_rec)
 setkey(dat_accel, glatos_array)
 setkey(hab_rec, code)
 
-dat_accel_1 <- dat_accel[hab_rec, ]
+# dat_accel_1 <- dat_accel[hab_rec, ]
 
 # ---- merge tag slope and intercept ----
+glimpse(dat_accel)
+glimpse(innovasea_combine)
+
+# select columns we want to merge
+innovasea_combine <- innovasea_combine %>%
+  select(serial_no, id_code, vue_tag_id_freq_space_id, freq_k_hz, range,
+         units, slope, intercept, transmit_ratio) %>%
+  rename(
+    sensor_range = range,
+    sensor_units = units
+  )
+
+# convert to characters
+innovasea_combine[, c("serial_no", "id_code") := list(as.character(serial_no),
+                                                  as.character(id_code))]
 
 
+# filter out tags we don't hear from
+
+innovasea_combine <- innovasea_combine[serial_no %in% dat_accel$sn]
+
+# then merge
+setkey(dat_accel, sn, transmitter_id)
+
+dat_accel <- dat_accel[innovasea_combine, ]
+glimpse(dat_accel)
 # ----   convert acceleration data to  m/s2 ----
 
+dat_accel[, convert_accel := slope * sensor_val + intercept]
 
 
 # ---- create summary dataframe of doy of year with sem and sd ect
