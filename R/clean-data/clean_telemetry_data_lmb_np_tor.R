@@ -118,17 +118,23 @@ dat_accel <- dat_accel[th_accel, ]
 glimpse(dat_accel)
 
 # ---- merge habitat data ----
-dat_accel %>%
+station_id <- dat_accel %>%
   distinct(station_no, station, glatos_array)
 
+# openxlsx::write.xlsx(station_id, here("data-raw",
+#                           "toronto-harbour-habitat-data",
+#                           "detection_station_id_detected.xlsx"))
+
+
+hab_rec %>%
+  distinct(code)
 glimpse(hab_rec)
 glimpse(hab_rec)
 
 setkey(dat_accel, glatos_array)
 setkey(hab_rec, code)
 
-
-
+dat_accel_1 <- dat_accel[hab_rec, ]
 
 # ---- merge tag slope and intercept ----
 
