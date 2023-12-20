@@ -28,6 +28,34 @@ fish_tag <- read_csv(here("data-raw",
 glimpse(fish_tag)
 
 fish_tag <- setDT(fish_tag)
+
+# ---- bring in habitat data ----
+
+hab_rec <- read_csv(here("data-raw",
+                         "toronto-harbour-habitat-data",
+                         "TH_Telemetry_ReceiverGroupHabitatCluster_July2019.csv")) %>%
+  janitor::clean_names()
+
+glimpse(hab_rec)
+
+hab_rec <- setDT(hab_rec)
+# ---- bring receiver codes
+rec_codes <- read_csv(here("data-raw",
+                         "toronto-harbour-habitat-data",
+                         "TH_rec_codes.csv")) %>%
+  janitor::clean_names()
+
+glimpse(rec_codes)
+
+rec_codes <- setDT(rec_codes)
+
+# ---- merge habitat data and rec-codes ----
+setkey(hab_rec, site)
+setkey(rec_codes, station_group)
+
+hab_rec <- hab_rec[rec_codes, ]
+
+glimpse(hab_rec)
 # ---- calculate day of year and month abbreviation ----
 # data.table is far more powerfull than dplyr
 dat[, c("doy", "month_abb") := list(
