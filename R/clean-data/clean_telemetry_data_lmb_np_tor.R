@@ -14,6 +14,13 @@ dat <- qread(here("data-raw",
                   "raw-lmb-np.qs"))
 glimpse(dat)
 
+dat <- dat %>%
+  rename(
+    sensor_val = Sensor.Val,
+    sensor_type = sensorv.type,
+    id_name = id.name
+  )
+
 
 # ---- bring in tag metadata -----
 
