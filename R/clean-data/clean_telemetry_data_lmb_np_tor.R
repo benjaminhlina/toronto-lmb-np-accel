@@ -43,44 +43,24 @@ setkey(dat, sensorv.type)
 # create sybset of just acceleration data
 dat_accel <- dat[sensorv.type %in% c("Accel")]
 
-
-
+# create just accel id detected
 accel_id <- dat_accel %>%
   distinct(transmitter_id)
-fish_id <- fish_tag %>%
-  filter(transmitter_model %in% "V13A-1x") %>%
-  distinct(printed_id)
 
+# ---- filter metadata ----
 
-glimpse(fish_tag)
-# fish_tag %>%
-#   filter(transmitter_model %in% "V13A-1x") %>%
-#   distinct(printed_id, id_or_p_sensor_id)
-accel_id
-fish_id
-
-unique(fish_tag$transmitter_model)
-
-th_accel_id <- fish_tag %>%
-  # filter(transmitter_model %in% "V13A-1x") %>%
-  filter(printed_id %in% accel_id$transmitter_id)
-
-glimpse(th_accel_id)
-glimpse(dat_accel)
-
-th_accel <- th_accel_id %>%
+th_accel <- fish_tag %>%
+  filter(printed_id %in% accel_id$transmitter_id) %>%
   dplyr::select(sn:transmitter_model, id_or_p_sensor_id,
                 pit_code, total_length, weight, sex,
-                date_tagged, location)
+                date_tagged, location) %>%
+  rename(
+    sx = sex,
+    wt = weight
+  )
 
 glimpse(th_accel)
 
-codes_spaces <- th_accel %>%
-  distinct(transmitter_model, printed_id, id_or_p_sensor_id)
-
-codes_spaces
-# openxlsx::write.xlsx(codes_spaces, here("data-raw",
-#                              "transmitter_ids_w_codespaces_2014-2016_THP.xlsx"))
 # look at what years to confirm we have the right years
 dat_accel %>%
   distinct(year)
