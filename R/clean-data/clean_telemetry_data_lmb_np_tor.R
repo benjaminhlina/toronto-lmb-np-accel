@@ -15,7 +15,10 @@ dat <- qread(here("data-raw",
 glimpse(dat)
 
 
+# ---- bring in tag metadata -----
+
 fish_tag <- read_csv(here("data-raw",
+                          "fish-tagging-data",
                           "Fish Data Master List_Nov2022.csv")) %>%
   janitor::clean_names() %>%
   mutate(
