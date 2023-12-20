@@ -63,6 +63,30 @@ setkey(rec_codes, station_group)
 hab_rec <- hab_rec[rec_codes, ]
 
 glimpse(hab_rec)
+
+# ---- bring in tagg metadata slopes from innovseas ----
+# bring in first set
+inno_17 <- read_csv(here("data-raw",
+                           "transmitter-info",
+                           "17456_toronto_&_region_conservation_clean.csv")) %>%
+  janitor::clean_names()
+
+glimpse(inno_17)
+
+inno_17 <- setDT(inno_17)
+# bring in second set
+inno_19 <- read_csv(here("data-raw",
+                           "transmitter-info",
+                           "19671_toronto_&_region_conservation_clean.csv")) %>%
+  janitor::clean_names()
+
+glimpse(inno_19)
+
+inno_19 <- setDT(inno_19)
+
+# combine them
+innovasea_combine <- bind_rows(inno_17, inno_19)
+
 # ---- calculate day of year and month abbreviation ----
 # data.table is far more powerfull than dplyr
 dat[, c("doy", "month_abb") := list(
@@ -72,14 +96,13 @@ dat[, c("doy", "month_abb") := list(
 )
 ]
 
-
 # ---- filter out just accell data ----
 # first set key which is how we filter in data.table
 
-setkey(dat, sensorv.type)
+setkey(dat, sensor_type)
 
 # create sybset of just acceleration data
-dat_accel <- dat[sensorv.type %in% c("Accel")]
+dat_accel <- dat[sensor_type %in% c("Accel")]
 
 # create just accel id detected
 accel_id <- dat_accel %>%
