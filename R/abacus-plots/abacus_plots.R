@@ -11,18 +11,13 @@
 }
 # ---- Bring in non summarized lmb and smb data ----
 
-dat <- qread(here("data-raw",
-                  "raw-lmb-np.qs"))
+dat <- qread(here("data-saved",
+                  "cleaned-telemetry-accel-th",
+                  "lmb_np_cleaned_accel_th.qs"))
 glimpse(dat)
 
 
-# ---- filter out just accell data ----
-# first set key which is how we filter in data.table
-
-setkey(dat, sensorv.type)
-
-# create sybset of just acceleration data
-dat_accel <- dat[sensorv.type %in% c("Accel")]
+# ---- change station name into factor ----
 
 dat_accel[, station_no := factor(station_no)]
 unique(dat_accel$station)
