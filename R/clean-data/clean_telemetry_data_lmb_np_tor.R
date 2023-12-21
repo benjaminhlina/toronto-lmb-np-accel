@@ -198,25 +198,9 @@ glimpse(dat_accel)
 dat_accel[, convert_accel := slope * sensor_val + intercept]
 
 
-# ---- create summary dataframe of doy of year with sem and sd ect
+# ----- export cleaned dataframe for futher analysis analysis ----
 
-accel_sum <- dat_accel[, .(
-  n = (.N), # number of dets heard per day
-  n_det = uniqueN(station_no), # unique # of receviers heard on in DOY
-  mean_accel = mean(Sensor.Val),
-  sd_accel = sd(Sensor.Val),
-  sem_sensor = sd(Sensor.Val) / sqrt((.N))
-),
-keyby =
-  .(spp, animal_id, sex, length, weight,
-    doy, month, month_abb, season, year)
-
-]
-
-
-# ----- export summary dataframe for GAMM analysis ----
-
-qsave(accel_sum, here("data-saved",
+qsave(dat_accel, here("data-saved",
                       "summary-accel-doy",
-                      "lmb_np_summary_accel_doy.qs"))
+                      "lmb_np_cleaned_accel_th.qs"))
 
