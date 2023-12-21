@@ -67,8 +67,8 @@ glimpse(hab_rec)
 # ---- bring in tagg metadata slopes from innovseas ----
 # bring in first set
 inno_17 <- read_csv(here("data-raw",
-                           "transmitter-info",
-                           "17456_toronto_&_region_conservation_clean.csv")) %>%
+                         "transmitter-info",
+                         "17456_toronto_&_region_conservation_clean.csv")) %>%
   janitor::clean_names()
 
 glimpse(inno_17)
@@ -76,8 +76,8 @@ glimpse(inno_17)
 inno_17 <- setDT(inno_17)
 # bring in second set
 inno_19 <- read_csv(here("data-raw",
-                           "transmitter-info",
-                           "19671_toronto_&_region_conservation_clean.csv")) %>%
+                         "transmitter-info",
+                         "19671_toronto_&_region_conservation_clean.csv")) %>%
   janitor::clean_names()
 
 glimpse(inno_19)
@@ -87,6 +87,14 @@ inno_19 <- setDT(inno_19)
 # combine them
 innovasea_combine <- bind_rows(inno_17, inno_19)
 
+# ---- bring in season timing dataframe ----
+seasons <- read_csv(here("data-raw",
+                         "season-info",
+                         "TH_season_restdates.csv")) %>%
+  janitor::clean_names()
+
+glimpse(seasons)
+seasons <- setDT(seasons)
 # ---- calculate day of year and month abbreviation ----
 # data.table is far more powerfull than dplyr
 dat[, c("doy", "month_abb") := list(
