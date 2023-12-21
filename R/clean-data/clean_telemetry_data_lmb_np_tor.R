@@ -48,8 +48,8 @@ glimpse(hab_rec)
 hab_rec <- setDT(hab_rec)
 # ---- bring receiver codes
 rec_codes <- read_csv(here("data-raw",
-                         "toronto-harbour-habitat-data",
-                         "TH_rec_codes.csv")) %>%
+                           "toronto-harbour-habitat-data",
+                           "TH_rec_codes.csv")) %>%
   janitor::clean_names()
 
 glimpse(rec_codes)
