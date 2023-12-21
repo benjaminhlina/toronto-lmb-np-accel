@@ -147,6 +147,8 @@ dat_accel <- dat_accel[th_accel, ]
 
 glimpse(dat_accel)
 
+
+# STUCK HERE
 # ---- merge habitat data ----
 station_id <- dat_accel %>%
   distinct(station_no, station, glatos_array)
@@ -165,6 +167,30 @@ setkey(dat_accel, glatos_array)
 setkey(hab_rec, code)
 
 # dat_accel_1 <- dat_accel[hab_rec, ]
+# ---- NEED TO ADD CORRECT SEASONAL GROUP -----
+
+glimpse(dat_accel)
+
+seasons <- seasons %>%
+  filter(year %in% dat_accel$year) %>%
+  select(-c("jd", "year"))
+
+glimpse(dat_accel)
+glimpse(seasons)
+
+
+dat_accel <- dat_accel %>%
+  select(-c("season", "months", "month"))
+
+glimpse(dat_accel)
+glimpse(seasons)
+
+# setkey(dat_accel, date)
+# setkey(seasons, ymd)
+
+dat_accel <- dat_accel %>%
+  left_join(seasons, by = c("date" = "ymd"))
+
 
 # ---- merge tag slope and intercept ----
 glimpse(dat_accel)
@@ -181,7 +207,7 @@ innovasea_combine <- innovasea_combine %>%
 
 # convert to characters
 innovasea_combine[, c("serial_no", "id_code") := list(as.character(serial_no),
-                                                  as.character(id_code))]
+                                                      as.character(id_code))]
 
 
 # filter out tags we don't hear from
