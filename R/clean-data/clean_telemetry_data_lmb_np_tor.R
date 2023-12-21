@@ -197,10 +197,9 @@ glimpse(dat_accel)
 
 dat_accel[, convert_accel := slope * sensor_val + intercept]
 
-
 # ----- export cleaned dataframe for futher analysis analysis ----
 
 qsave(dat_accel, here("data-saved",
-                      "summary-accel-doy",
+                      "cleaned-telemetry-accel-th",
                       "lmb_np_cleaned_accel_th.qs"))
 
