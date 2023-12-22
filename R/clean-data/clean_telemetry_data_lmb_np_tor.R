@@ -139,7 +139,7 @@ dat_accel <- dat_accel[th_accel, ]
 glimpse(dat_accel)
 
 
-# STUCK HERE
+
 # ---- merge habitat data ----
 station_id <- dat_accel %>%
   distinct(station_no, station, glatos_array)
@@ -149,16 +149,16 @@ station_id <- dat_accel %>%
 #                           "detection_station_id_detected.xlsx"))
 
 
-hab_rec %>%
-  distinct(code)
 glimpse(hab_rec)
-glimpse(hab_rec)
+glimpse(dat_accel)
+hab_rec[, station_no := as.character(station_no)]
 
-setkey(dat_accel, glatos_array)
-setkey(hab_rec, code)
+setkey(dat_accel, glatos_array, station_no, station)
+setkey(hab_rec, glatos_array, station_no, station)
 
-# dat_accel_1 <- dat_accel[hab_rec, ]
-# ---- NEED TO ADD CORRECT SEASONAL GROUP -----
+
+dat_accel <- dat_accel[hab_rec, ]
+# ---- Added in seasonal time points -----
 
 glimpse(dat_accel)
 
