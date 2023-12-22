@@ -38,31 +38,14 @@ fish_tag <- setDT(fish_tag)
 
 # ---- bring in habitat data ----
 
-hab_rec <- read_csv(here("data-raw",
+hab_rec<- read_csv(here("data-raw",
                          "toronto-harbour-habitat-data",
-                         "TH_Telemetry_ReceiverGroupHabitatCluster_July2019.csv")) %>%
+                         "detection_station_id_detected_MLP.csv")) %>%
   janitor::clean_names()
 
 glimpse(hab_rec)
 
 hab_rec <- setDT(hab_rec)
-# ---- bring receiver codes
-rec_codes <- read_csv(here("data-raw",
-                           "toronto-harbour-habitat-data",
-                           "TH_rec_codes.csv")) %>%
-  janitor::clean_names()
-
-glimpse(rec_codes)
-
-rec_codes <- setDT(rec_codes)
-
-# ---- merge habitat data and rec-codes ----
-setkey(hab_rec, site)
-setkey(rec_codes, station_group)
-
-hab_rec <- hab_rec[rec_codes, ]
-
-glimpse(hab_rec)
 
 # ---- bring in tagg metadata slopes from innovseas ----
 # bring in first set
@@ -231,6 +214,7 @@ glimpse(dat_accel)
 
 dat_accel[, convert_accel := slope * sensor_val + intercept]
 
+glimpse(dat_accel)
 # ----- export cleaned dataframe for futher analysis analysis ----
 
 qsave(dat_accel, here("data-saved",
