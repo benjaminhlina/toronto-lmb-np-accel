@@ -16,20 +16,31 @@ dat_accel  <- qread(here("data-saved",
 
 glimpse(dat_accel)
 
+
 # remove sensor_values that are lesthan or equal to 8
 # as the fish is resting.
+dat_accel_1 <- dat_accel[sensor_val > 8]
+
+summary(dat_accel$sensor_val)
 # look at the n of less then 8.
+nrow(dat_accel) - nrow(dat_accel_1)
+# if we filter less than 8 we loose 197, 439 detections probably don't want
+# to do this...ADC values > 8 in lake trout were considered in active
+# by Cruz-font et al. 2016
+
+glimpse(dat_accel)
+
 # ---- create summarized dataframe based on DOY -----
 accel_sum <- dat_accel[, .(
   n = (.N), # number of dets heard per day
   n_det = uniqueN(station_no), # unique # of receviers heard on in DOY
-  mean_accel = mean(Sensor.Val),
-  sd_accel = sd(Sensor.Val),
-  sem_sensor = sd(Sensor.Val) / sqrt((.N))
+  mean_accel = mean(convert_accel),
+  sd_accel = sd(convert_accel),
+  sem_sensor = sd(convert_accel) / sqrt((.N))
 ),
 keyby =
-  .(spp, animal_id, sex, length, weight,
-    doy, month, month_abb, season, year)
+  .(spp, animal_id, sx, length, wt, date,
+    doy, day, week, month, month_abb, season, year)
 
 ]
 
