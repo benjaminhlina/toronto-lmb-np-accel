@@ -40,7 +40,7 @@ accel_sum <- dat_accel[, .(
 ),
 keyby =
   .(spp, animal_id, sx, length, wt, date,
-    doy, day, week, month, month_abb, season, year)
+    doy, day, week, month, month_abb, season, year, habitat_type, cluster)
 
 ]
 
