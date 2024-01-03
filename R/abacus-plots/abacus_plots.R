@@ -19,9 +19,16 @@ glimpse(dat)
 
 # ---- change station name into factor ----
 
-dat_accel[, station_no := factor(station_no)]
-unique(dat_accel$station)
-glimpse(dat_accel)
+dat[, station_no := factor(station_no)]
+unique(dat$station)
+glimpse(dat)
+
+unique(is.na(dat$station_no))
+
+dat <- dat %>%
+  mutate(
+    change_rec = if_else(station_no != lag(station_no), true = 1, false = 0)
+  )
 # ---- use mapp to loop through and export abacus plots -----
 
 dat_accel %>%
