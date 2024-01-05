@@ -63,7 +63,7 @@ inno_19 <- setDT(inno_19)
 
 # combine them
 innovasea_combine <- bind_rows(inno_17, inno_19)
-
+innovasea_combine
 # ---- bring in season timing dataframe ----
 seasons <- read_csv(here("data-raw",
                          "season-info",
@@ -76,10 +76,13 @@ seasons <- setDT(seasons)
 # data.table is far more powerfull than dplyr
 
 dat[, detection_timestamp_est := with_tz(detection_timestamp_utc, "EST")]
-dat[, c("doy", "month_abb") := list(
+dat[, c("date", "doy", "month", "month_abb", "year") := list(
+  floor_date(detection_timestamp_est, unit = "day"),
   yday(detection_timestamp_est),
+  month(detection_timestamp_est),
   month(detection_timestamp_est,
-        label = TRUE, abbr = TRUE)
+        label = TRUE, abbr = TRUE),
+  year(detection_timestamp_est)
 )
 ]
 
@@ -165,18 +168,12 @@ seasons <- seasons %>%
 glimpse(dat_accel)
 glimpse(seasons)
 
-
-dat_accel <- dat_accel %>%
-  select(-c("season", "months", "month"))
-
-glimpse(dat_accel)
-glimpse(seasons)
-
 # setkey(dat_accel, date)
 # setkey(seasons, ymd)
 
 dat_accel <- dat_accel %>%
-  left_join(seasons, by = c("date" = "ymd"))
+  left_join(seasons, by = c("date" = "ymd", "month" = "month"))
+
 
 
 # ---- merge tag slope and intercept ----
@@ -191,24 +188,20 @@ innovasea_combine <- innovasea_combine %>%
     sensor_range = range,
     sensor_units = units
   )
-
-# convert to characters
-innovasea_combine[, c("serial_no", "id_code") := list(as.character(serial_no),
-                                                      as.character(id_code))]
+glimpse(innovasea_combine)
+glimpse(dat_accel)
 
 
-# filter out tags we don't hear from
-
-innovasea_combine <- innovasea_combine[serial_no %in% dat_accel$sn]
 
 # then merge
-setkey(dat_accel, sn, transmitter_id)
 
-dat_accel <- dat_accel[innovasea_combine, ]
-glimpse(dat_accel)
+dat_accel <- dat_accel %>%
+  left_join(innovasea_combine, by = c("tag_serial_number" = "serial_no",
+                                      "transmitter_id" = "id_code"))
+
 # ----   convert acceleration data to  m/s2 ----
 
-dat_accel[, convert_accel := slope * sensor_val + intercept]
+dat_accel[, convert_accel := slope * sensor_value + intercept]
 
 glimpse(dat_accel)
 
