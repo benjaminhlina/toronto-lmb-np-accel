@@ -15,25 +15,27 @@
   library(readr)
 }
 
-
+# ---- bring in summary dataframe -----
 dat <- qread(here("data-saved",
                   "summary-accel-doy",
                   "lmb_np_summary_accel_doy.qs"))
 
-
-
-
+glimpse(dat)
+# look at data structure
+# ---- split by species ----
 dat_sp <- dat %>%
   split(.$spp)
 
+# ---- look at distibution for each species ----
 dat_sp %>%
   map(~ descdist(.x$mean_accel))
 
-
+# ---- plot distirubtion for each species ----
 dat_sp %>%
   map(~ ggplot(data = .x, aes(x = mean_accel)) +
         geom_histogram()
   )
+# both look ver gamma distributed
 
 fit_gamma <- dat_sp %>%
   map(~ fitdist(.x$mean_accel, dist = "gamma", method = "mme")
@@ -42,13 +44,18 @@ fit_norm <- dat_sp %>%
   map(~ fitdist(.x$mean_accel, dist = "norm", method = "mle")
   )
 
+# plot distribution against gamma distribution
 fit_gamma %>%
   map(~ plot(.x))
+
+# plot distribution against normal distribution
 fit_norm %>%
   map(~ plot(.x))
 
+# gamma distribution makes the most sense
 glimpse(dat)
 
+# ---- prep data for gamm ----
 dat_sp <- dat_sp %>%
   map(~
         .x %>%
@@ -79,7 +86,12 @@ lmb_m <- bam(
 )
 
 
+
 appraise(lmb_m)
+
+draw(lmb_m)
+
+
 
 dat_1 <- lmb %>%
   mutate(
