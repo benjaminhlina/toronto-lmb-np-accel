@@ -11,30 +11,24 @@
 
 dat <- qread(here("data-raw",
                   "detection-data",
-                  "raw-lmb-np.qs"))
+                  "raw-lmb-np-correct.qs"))
 glimpse(dat)
 
-dat <- dat %>%
-  rename(
-    sensor_val = Sensor.Val,
-    sensor_type = sensorv.type,
-    id_name = id.name
-  )
 
 
 # ---- bring in tag metadata -----
 
-fish_tag <- read_csv(here("data-raw",
-                          "fish-tagging-data",
-                          "Fish Data Master List_Nov2022.csv")) %>%
-  janitor::clean_names() %>%
-  mutate(
-    sn = as.character(sn)
-  )
-
-glimpse(fish_tag)
-
-fish_tag <- setDT(fish_tag)
+# fish_tag <- read_csv(here("data-raw",
+#                           "fish-tagging-data",
+#                           "Fish Data Master List_Nov2022.csv")) %>%
+#   janitor::clean_names() %>%
+#   mutate(
+#     sn = as.character(sn)
+#   )
+#
+# glimpse(fish_tag)
+#
+# fish_tag <- setDT(fish_tag)
 
 # ---- bring in habitat data ----
 
