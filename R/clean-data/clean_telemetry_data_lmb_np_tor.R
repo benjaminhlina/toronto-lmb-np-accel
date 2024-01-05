@@ -117,46 +117,36 @@ dat[, c("date", "doy", "month", "month_abb", "year") := list(
 #   distinct(year)
 
 # look at what projects to confirm we have the right project
-dat_accel %>%
+dat %>%
   distinct(glatos_project_receiver)
+dat_accel <- dat[glatos_project_receiver %in% "THFHA"]
+
 
 
 # look at accell data overall
 glimpse(dat_accel)
-glimpse(th_accel)
-
-# convert printed_id to character for merging
-
-th_accel[, printed_id := as.character(printed_id)]
-
-# ---- merge detection data with metadata
-
-setkey(dat_accel, transmitter_id)
-setkey(th_accel, printed_id)
-dat_accel <- dat_accel[th_accel, ]
-
-glimpse(dat_accel)
 
 
 
-# ---- merge habitat data ----
-station_id <- dat_accel %>%
-  distinct(station_no, station, glatos_array)
 
-# openxlsx::write.xlsx(station_id, here("data-raw",
-#                           "toronto-harbour-habitat-data",
-#                           "detection_station_id_detected.xlsx"))
-
-
-glimpse(hab_rec)
-glimpse(dat_accel)
-hab_rec[, station_no := as.character(station_no)]
-
-setkey(dat_accel, glatos_array, station_no, station)
-setkey(hab_rec, glatos_array, station_no, station)
-
-
-dat_accel <- dat_accel[hab_rec, ]
+# ---- merge habitat we wneed to fix this  ----
+# station_id <- dat_th %>%
+#   distinct(station_no, station, glatos_array)
+# station_id
+# # openxlsx::write.xlsx(station_id, here("data-raw",
+# #                           "toronto-harbour-habitat-data",
+# #                           "detection_station_id_detected.xlsx"))
+#
+#
+# glimpse(hab_rec)
+# glimpse(dat_accel)
+# hab_rec[, station_no := as.character(station_no)]
+#
+# setkey(dat_accel, glatos_array, station_no, station)
+# setkey(hab_rec, glatos_array, station_no, station)
+#
+#
+# dat_accel <- dat_accel[hab_rec, ]
 # ---- Added in seasonal time points -----
 
 glimpse(dat_accel)
