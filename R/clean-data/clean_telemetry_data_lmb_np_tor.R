@@ -74,42 +74,44 @@ glimpse(seasons)
 seasons <- setDT(seasons)
 # ---- calculate day of year and month abbreviation ----
 # data.table is far more powerfull than dplyr
+
+dat[, detection_timestamp_est := with_tz(detection_timestamp_utc, "EST")]
 dat[, c("doy", "month_abb") := list(
-  yday(detection_timestamp_EST),
-  month(detection_timestamp_EST,
+  yday(detection_timestamp_est),
+  month(detection_timestamp_est,
         label = TRUE, abbr = TRUE)
 )
 ]
 
 # ---- filter out just accell data ----
-# first set key which is how we filter in data.table
-
-setkey(dat, sensor_type)
-
-# create sybset of just acceleration data
-dat_accel <- dat[sensor_type %in% c("Accel")]
-
-# create just accel id detected
-accel_id <- dat_accel %>%
-  distinct(transmitter_id)
-
-# ---- filter metadata ----
-
-th_accel <- fish_tag %>%
-  filter(printed_id %in% accel_id$transmitter_id) %>%
-  dplyr::select(sn:transmitter_model, id_or_p_sensor_id,
-                pit_code, total_length, weight, sex,
-                date_tagged, location) %>%
-  rename(
-    sx = sex,
-    wt = weight
-  )
-
-glimpse(th_accel)
-
-# look at what years to confirm we have the right years
-dat_accel %>%
-  distinct(year)
+# # first set key which is how we filter in data.table
+#
+# setkey(dat, sensor_type)
+#
+# # create sybset of just acceleration data
+# dat_accel <- dat[sensor_type %in% c("Accel")]
+#
+# # create just accel id detected
+# accel_id <- dat_accel %>%
+#   distinct(transmitter_id)
+#
+# # ---- filter metadata ----
+#
+# th_accel <- fish_tag %>%
+#   filter(printed_id %in% accel_id$transmitter_id) %>%
+#   dplyr::select(sn:transmitter_model, id_or_p_sensor_id,
+#                 pit_code, total_length, weight, sex,
+#                 date_tagged, location) %>%
+#   rename(
+#     sx = sex,
+#     wt = weight
+#   )
+#
+# glimpse(th_accel)
+#
+# # look at what years to confirm we have the right years
+# dat_accel %>%
+#   distinct(year)
 
 # look at what projects to confirm we have the right project
 dat_accel %>%
