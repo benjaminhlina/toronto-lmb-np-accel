@@ -23,7 +23,7 @@ glimpse(dat_accel)
 
 summary(dat_accel$sensor_val)
 # look at the n of less then 8.
-nrow(dat_accel) - nrow(dat_accel_1)
+# nrow(dat_accel) - nrow(dat_accel_1)
 # if we filter less than 8 we loose 197,439 detections probably don't want
 # to do this...ADC values > 8 in lake trout were considered in active
 # by Cruz-font et al. 2016
@@ -32,8 +32,8 @@ nrow(dat_accel) - nrow(dat_accel_1)
 glimpse(dat_accel)
 
 dat_accel <- dat_accel[, c("time_bin_1h", "time_bin_2h") := list(
-  floor_date(detection_timestamp_EST, unit = "1 h"),
-  floor_date(detection_timestamp_EST, unit = "2 h")
+  floor_date(detection_timestamp_est, unit = "1 h"),
+  floor_date(detection_timestamp_est, unit = "2 h")
 )
 ]
 
@@ -47,7 +47,7 @@ accel_sum_1h <- dat_accel[, .(
   sem_sensor = sd(convert_accel) / sqrt((.N))
 ),
 keyby =
-  .(spp, animal_id, sx, length, wt, time_bin_1h,
+  .(common_name_e, animal_id, sex, length, weight, time_bin_1h,
     doy, day, week, month, month_abb, season, year, habitat_type, cluster)
 
 ]
@@ -63,7 +63,7 @@ accel_sum_2h <- dat_accel[, .(
   sem_sensor = sd(convert_accel) / sqrt((.N))
 ),
 keyby =
-  .(spp, animal_id, sx, length, wt, time_bin_2h,
+  .(common_name_e, animal_id, sex, length, weight, time_bin_2h,
     doy, day, week, month, month_abb, season, year, habitat_type, cluster)
 
 ]
