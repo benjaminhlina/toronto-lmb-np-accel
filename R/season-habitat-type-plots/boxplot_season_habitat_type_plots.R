@@ -17,6 +17,13 @@ dat <- qread(here("data-saved",
 glimpse(dat)
 
 
+dat <- dat %>%
+  mutate(
+    season = factor(season,
+                    levels = c("Fall", "Winter", "Spring", "Summer")
+    )
+  )
+
 # ----- create boxplots ----
 
 # boxplot regardless of seasons
@@ -36,7 +43,7 @@ p <- ggplot(data = dat,
        y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
   )
 
-# p
+p
 
 ggsave(filename = here("plots",
                        "boxplot",
@@ -65,7 +72,7 @@ p1 <- ggplot(data = dat,
        y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
   )
 
-# p1
+p1
 
 ggsave(filename = here("plots",
                        "boxplot",
