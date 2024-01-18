@@ -24,7 +24,7 @@ glimpse(dat)
 # look at data structure
 # ---- split by species ----
 dat_sp <- dat %>%
-  split(.$spp)
+  split(.$common_name_e)
 
 # ---- look at distibution for each species ----
 dat_sp %>%
@@ -69,6 +69,22 @@ dat_sp <- dat_sp %>%
 
 lmb <- dat_sp$`Largemouth Bass`
 np <- dat_sp$`Northern Pike`
+
+glimpse(lmb)
+
+ggplot(data = lmb %>%
+         filter(habitat_type != is.na(habitat_type)),
+       aes(x = habitat_type, y = mean_accel,
+                       fill = season)) +
+  geom_boxplot()
+ggplot(data = lmb %>%
+         filter(habitat_type != is.na(habitat_type)),
+       aes(x = habitat_type, y = mean_accel,
+                       # fill = season
+           )) +
+  geom_boxplot()
+
+lmb_sum <-
 # need to create start and to from colum for autocorrelation
 # ----- Create DOY Model ----
 
@@ -92,34 +108,34 @@ appraise(lmb_m)
 draw(lmb_m)
 
 
-
-dat_1 <- lmb %>%
-  mutate(
-    year = "0",
-    animal_id = "a"
-  )
-
-predict.gam()
-
-pred <- augment(lmb_m, newdata = dat_1, sexclude = c("s(year)", "s(animal_id)"))
-
-pred <- pred %>%
-  mutate(
-    lower = exp(1) ^ (.fitted - 1.96 * .se.fit),
-    upper = exp(1) ^ (.fitted + 1.96 * .se.fit),
-    .fitted = exp(1) ^ .fitted
-  )
-
-
-ggplot() +
-  geom_line(data = pred, aes(x = doy, y = .fitted, colour = habitat_type)) +
-  geom_ribbon(data = pred, aes(x = doy, y = .fitted,
-                               ymin = lower, ymax = upper,
-                               fill = habitat_type),
-              alpha = 0.2)
-
-
-glimpse(lmb)
+#
+# dat_1 <- lmb %>%
+#   mutate(
+#     year = "0",
+#     animal_id = "a"
+#   )
+#
+# predict.gam()
+#
+# pred <- augment(lmb_m, newdata = dat_1, sexclude = c("s(year)", "s(animal_id)"))
+#
+# pred <- pred %>%
+#   mutate(
+#     lower = exp(1) ^ (.fitted - 1.96 * .se.fit),
+#     upper = exp(1) ^ (.fitted + 1.96 * .se.fit),
+#     .fitted = exp(1) ^ .fitted
+#   )
+#
+#
+# ggplot() +
+#   geom_line(data = pred, aes(x = doy, y = .fitted, colour = habitat_type)) +
+#   geom_ribbon(data = pred, aes(x = doy, y = .fitted,
+#                                ymin = lower, ymax = upper,
+#                                fill = habitat_type),
+#               alpha = 0.2)
+#
+#
+# glimpse(lmb)
 ggplot(data = lmb, aes(x = season, y = mean_accel,
                        fill = habitat_type)) +
   geom_boxplot()
