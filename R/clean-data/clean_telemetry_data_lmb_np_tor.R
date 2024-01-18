@@ -34,7 +34,7 @@ glimpse(dat)
 
 hab_rec<- read_csv(here("data-raw",
                          "toronto-harbour-habitat-data",
-                         "detection_station_id_detected_MLP.csv")) %>%
+                         "detection_station_id_detected.csv")) %>%
   janitor::clean_names()
 
 glimpse(hab_rec)
@@ -121,8 +121,8 @@ dat %>%
   distinct(glatos_project_receiver)
 dat_accel <- dat[glatos_project_receiver %in% "THFHA"]
 
-
-
+rm(dat)
+gc()
 # look at accell data overall
 glimpse(dat_accel)
 
@@ -130,23 +130,23 @@ glimpse(dat_accel)
 
 
 # ---- merge habitat we wneed to fix this  ----
-# station_id <- dat_th %>%
-#   distinct(station_no, station, glatos_array)
-# station_id
-# # openxlsx::write.xlsx(station_id, here("data-raw",
-# #                           "toronto-harbour-habitat-data",
-# #                           "detection_station_id_detected.xlsx"))
-#
-#
-# glimpse(hab_rec)
+station_id <- dat_accel %>%
+  distinct(station_no, station, glatos_array) %>%
+  arrange(glatos_array)
+station_id
+# openxlsx::write.xlsx(station_id, here("data-raw",
+#                           "toronto-harbour-habitat-data",
+#                           "detection_station_id_detected.xlsx"))
+glimpse(hab_rec)
 # glimpse(dat_accel)
 # hab_rec[, station_no := as.character(station_no)]
 #
-# setkey(dat_accel, glatos_array, station_no, station)
-# setkey(hab_rec, glatos_array, station_no, station)
+setkey(dat_accel, glatos_array, station_no, station)
+setkey(hab_rec, glatos_array, station_no, station)
 #
 #
-# dat_accel <- dat_accel[hab_rec, ]
+dat_accel <- dat_accel[hab_rec, ]
+
 # ---- Added in seasonal time points -----
 
 glimpse(dat_accel)
@@ -191,11 +191,14 @@ dat_accel <- dat_accel %>%
 
 # ----   convert acceleration data to  m/s2 ----
 
-dat_accel[, convert_accel := slope * sensor_value + intercept]
+dat_accel <- dat_accel %>%
+  mutate(
+    convert_accel = ((slope * sensor_value) + intercept)
+  )
 
 glimpse(dat_accel)
 
-
+# class(dat_accel)
 
 # ----- export cleaned dataframe for futher analysis analysis ----
 
