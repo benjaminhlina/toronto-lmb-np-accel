@@ -12,7 +12,7 @@
 
 dat_accel  <- qread(here("data-saved",
                          "cleaned-telemetry-accel-th",
-                         "lmb_np_cleaned_accel_th.qs"))
+                         "lmb_np_cleaned_accel_th_after_abacus.qs"))
 
 glimpse(dat_accel)
 
