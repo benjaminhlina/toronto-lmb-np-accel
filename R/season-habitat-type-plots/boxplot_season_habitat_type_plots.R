@@ -169,13 +169,52 @@ p8
 
 p1
 
-p9 <- p8 / (p1 +
+p9 <- (p8
+  # theme(
+  #   axis.text.x = element_blank()
+  # )
+) / (p1 +
               theme(
-                strip.text = element_blank()
+                strip.text = element_blank(),
               )
-)
+) +
+  plot_annotation(tag_levels = "a", tag_suffix = ")")
+
+# p9
+ggsave(filename = here("plots",
+                       "boxplot",
+                       "habitat_type_and_season_spp_boxplot.png"),
+       width = 14, height = 11, plot = p9)
+
+
+
+p10 <- (p5 +
+          theme(
+            axis.text.x = element_blank(),
+            axis.title.x = element_blank()
+          )) / p6 +
+  plot_annotation(tag_levels = "a", tag_suffix = ")")
+
+# p10
+
 
 ggsave(filename = here("plots",
                        "boxplot",
-                       "habitat_type_and_season_spp_boxplot_mlp_suggest.png"),
-       width = 14, height = 11, plot = p9)
+                       "hab_season_spp_boxplot_ticks_labled_no_outlier.png"),
+       width = 14, height = 11, plot = p10)
+
+
+p11 <- (p5 +
+          theme(
+            # axis.text.x = element_blank(),
+            axis.title.x = element_blank()
+          )) / p6 +
+  plot_annotation(tag_levels = "a", tag_suffix = ")")
+
+p11
+
+
+ggsave(filename = here("plots",
+                       "boxplot",
+                       "hab_season_spp_boxplot_labled_no_outlier.png"),
+       width = 14, height = 11, plot = p11)
