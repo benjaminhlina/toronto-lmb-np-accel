@@ -23,15 +23,16 @@ glimpse(dat)
 # look at data structure
 
 
-lmb <- dat %>%
+np <- dat %>%
   filter(common_name_e == "Northern Pike")
 
 
-# ---- start our models for LMB ----
-glimpse(lmb)
+
+# ---- start our models for np ----
+glimpse(np)
 m <- glmmTMB(mean_accel ~ habitat_type * season + (1 | animal_id),
              # ar1(season + 0 | animal_id),
-             data = lmb,
+             data = np,
              family = Gamma(link = "log")
 )
 m1 <- update(m, . ~ habitat_type + (1 | animal_id),  REML = FALSE)
@@ -40,9 +41,10 @@ m2 <- update(m, . ~ season + (1 | animal_id),  REML = FALSE)
 
 
 
-
 res <- simulateResiduals(m)
 plot(res)
+
+
 
 res_m1 <- simulateResiduals(m1)
 plot(res_m1)
@@ -72,19 +74,20 @@ glance_summary <- map_df(glance_list, ~as.data.frame(.x), .id = "id") %>%
          family = lapply(model_list, function(x) family(x)$family),
          link = lapply(model_list, function(x) family(x)$link),
   ) %>%
+  arrange(AIC) %>%
   mutate(
     delta_AIC = AIC - first(AIC),
     AIC_weight = exp(-0.5 * delta_AIC) / sum(exp(-0.5 * delta_AIC))
   ) %>%
-  dplyr::select(family, link, model, id:AIC, delta_AIC, AIC_weight, BIC:df.residual) %>%
-  arrange(AIC)
+  dplyr::select(family, link, model, id:AIC, delta_AIC, AIC_weight, BIC:df.residual)
 
 # view model selection ------
 glance_summary
+
 glance_summary %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
-                                  "glmm_model_selection_hab_season_lmb.xlsx"))
+                                  "glmm_model_selection_hab_season_np.xlsx"))
 
 # create specific stuff for model saving -----
 car::Anova(m)
@@ -101,11 +104,11 @@ ind_effects <- tidy(m)
 main_effects %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
-                                  "glmm_main_effects_hab_season_lmb.xlsx"))
+                                  "glmm_main_effects_hab_season_np.xlsx"))
 ind_effects %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
-                                  "glmm_ind_effects_hab_season_lmb.xlsx"))
+                                  "glmm_ind_effects_hab_season_np.xlsx"))
 
 # multiple comparissions ----
 
@@ -125,7 +128,7 @@ contrast_effects <- contrast(multi_comp, method = "pairwise",
 hab_season_contrast <- tidy(contrast_effects) %>%
   janitor::clean_names() %>%
   arrange(adj_p_value, contrast)
-
+hab_season_contrast
 
 
 
@@ -138,7 +141,7 @@ hab_season_contrast %>%
 
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
-                                  "glmm_multi_comp_hab_season_LMB.xlsx"))
+                                  "glmm_multi_comp_hab_season_np.xlsx"))
 
 
 
