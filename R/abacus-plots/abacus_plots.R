@@ -75,7 +75,7 @@ dat %>%
     height = 7,
     width = 11,
     plot =
-      ggplot(data = ., aes(x = detection_timestamp_EST, y = station)) +
+      ggplot(data = ., aes(x = detection_timestamp_est, y = station)) +
       geom_line(aes(group = 1, colour = change_rec)) + # we can remove line if it's distracting
       geom_jitter(aes(fill = station), shape = 21, size = 3,
                   alpha = 0.50, height = 0.1) +
