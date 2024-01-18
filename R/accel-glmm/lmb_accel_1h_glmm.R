@@ -24,7 +24,12 @@ glimpse(dat)
 
 
 lmb <- dat %>%
-  filter(common_name_e == "Largemouth Bass")
+  filter(common_name_e == "Largemouth Bass") %>%
+  mutate(
+    season = factor(season,
+                    levels = c("Fall", "Winter", "Spring", "Summer")
+    )
+  )
 
 
 # ---- start our models for LMB ----
