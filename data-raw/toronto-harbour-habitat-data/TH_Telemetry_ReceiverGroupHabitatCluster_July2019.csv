@@ -1,37 +1,38 @@
-Order,Site,Grouping,Habitat Type
-1,Billy Bishop W,4,Exposed/Low SAV
-2,Cell 1,1,Shallow/Dense SAV
-3,Cell 2,5,Shallow/Low SAV
-4,Cell 3,2,Deep/Low SAV
-5,Cherry Beach,2,Deep/Low SAV
-6,Cherry Beach 2b,4,Exposed/Low SAV
-7,Curtain,4,Exposed/Low SAV
-8,Don River,5,Shallow/Low SAV
-9,Don River Mouth,2,Deep/Low SAV
-10,E Western Gap,2,Deep/Low SAV
-11,Embayment A,5,Shallow/Low SAV
-12,Embayment B,5,Shallow/Low SAV
-13,Embayment C,5,Shallow/Low SAV
-14,Embayment D,1,Shallow/Dense SAV
-15,Exhibition Grounds,NA,No Data
-16,Fire Dock,3,Mod/Dense SAV
-17,Jarvis,2,Deep/Low SAV
-18,Lake Ontario,NA,No Data
-19,Middle Waterfront,2,Deep/Low SAV
-20,N Eastern Gap,2,Deep/Low SAV
-21,Outer Harbour Marina,3,Mod/Dense SAV
-22,Outside Emb C,2,Deep/Low SAV
-23,Parliament,2,Deep/Low SAV
-24,S Eastern Gap,2,Deep/Low SAV
-25,Spadina ,2,Deep/Low SAV
-26,TI 40,1,Shallow/Dense SAV
-27,TI 41,1,Shallow/Dense SAV
-28,TI 42,1,Shallow/Dense SAV
-29,TI 43,1,Shallow/Dense SAV
-30,TI 44,3,Mod/Dense SAV
-31,TI 45,3,Mod/Dense SAV
-32,TI 46,3,Mod/Dense SAV
-33,TI 47,3,Mod/Dense SAV
-34,Toronto Islands 27,1,Shallow/Dense SAV
-35,Turning Basin,2,Deep/Low SAV
-36,W Western Gap,2,Deep/Low SAV
+Order,Site,glatos,Grouping,Habitat Type
+1,Billy Bishop W,BBW,4,Exposed/Low SAV
+2,Cell 1,CE1,1,Shallow/Dense SAV
+3,Cell 2,CE2,5,Shallow/Low SAV
+4,Cell 3,CE3,2,Deep/Low SAV
+5,Cherry Beach,CHB,2,Deep/Low SAV
+6,Cherry Beach 2b,CH2?,4,Exposed/Low SAV
+7,Curtain,GAT,4,Exposed/Low SAV
+8,Don River,DOR,5,Shallow/Low SAV
+9,Don River Mouth,DRM,2,Deep/Low SAV
+10,E Western Gap,EWG,2,Deep/Low SAV
+11,Embayment A,EMA,5,Shallow/Low SAV
+12,Embayment B,EMB,5,Shallow/Low SAV
+13,Embayment C,EMC,5,Shallow/Low SAV
+14,Embayment D,EMD,1,Shallow/Dense SAV
+15,Exhibition Grounds,EXG,NA,No Data
+16,Fire Dock,FDS,3,Mod/Dense SAV
+17,Jarvis,JAS,2,Deep/Low SAV
+18,Lake Ontario,LKO,NA,No Data
+19,Lake Ontario,WLO,NA,No Data
+19,Middle Waterfront,MWF,2,Deep/Low SAV
+20,N Eastern Gap,NEG,2,Deep/Low SAV
+21,Outer Harbour Marina,OHM,3,Mod/Dense SAV
+22,Outside Emb C,OEC,2,Deep/Low SAV
+23,Parliament,PAS,2,Deep/Low SAV
+24,S Eastern Gap,SEG,2,Deep/Low SAV
+25,Spadina ,SPS,2,Deep/Low SAV
+26,TI 40,TI40,1,Shallow/Dense SAV
+27,TI 41,TI41,1,Shallow/Dense SAV
+28,TI 42,TI42,1,Shallow/Dense SAV
+29,TI 43,TI43,1,Shallow/Dense SAV
+30,TI 44,TI44,3,Mod/Dense SAV
+31,TI 45,TI45,3,Mod/Dense SAV
+32,TI 46,TI46,3,Mod/Dense SAV
+33,TI 47,TI47,3,Mod/Dense SAV
+34,Toronto Islands 27,TI27,1,Shallow/Dense SAV
+35,Turning Basin,TUB,2,Deep/Low SAV
+36,W Western Gap,WWG,2,Deep/Low SAV
