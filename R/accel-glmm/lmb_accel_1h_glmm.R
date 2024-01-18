@@ -106,10 +106,14 @@ ind_effects <- tidy(m)
 main_effects %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
+                                  "habitat-season",
+                                  "lmb",
                                   "glmm_main_effects_hab_season_lmb.xlsx"))
 ind_effects %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
+                                  "habitat-season",
+                                  "lmb",
                                   "glmm_ind_effects_hab_season_lmb.xlsx"))
 
 # multiple comparissions ----
@@ -143,7 +147,69 @@ hab_season_contrast %>%
 
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
+                                  "habitat-season",
+                                  "lmb",
                                   "glmm_multi_comp_hab_season_LMB.xlsx"))
+
+
+
+# ----- create specific stuff for model saving -----
+car::Anova(m1)
+summary(m1)
+
+main_effects_m1 <- tidy(car::Anova(m1))
+
+
+
+ind_effects_m1 <- tidy(m1)
+
+
+# main_effects %>%
+main_effects_m1 %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat",
+                                  "lmb",
+                                  "glmm_main_effects_hab_lmb.xlsx"))
+ind_effects_m1 %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat",
+                                  "lmb",
+                                  "glmm_ind_effects_hab_season_lmb.xlsx"))
+
+# multiple comparissions ----
+
+multi_comp_m1 <- emmeans(m1, ~ habitat_type,
+                      adjust = "Tukey", type = "response")
+# contrast(multi_comp, method = "pairwise", adjust = "bonferroni")
+
+
+
+
+
+contrast_effects_m1 <- contrast(multi_comp_m1, method = "pairwise",
+                             adjust = "bonferroni")
+
+hab_season_contrast_m1 <- tidy(contrast_effects_m1) %>%
+  janitor::clean_names() %>%
+  arrange(adj_p_value, contrast)
+
+
+
+
+
+hab_season_contrast_m1 %>%
+  # filter(adj_p_value < 0.05) %>%
+  arrange(
+    # contrast,
+    adj_p_value) %>%
+
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat",
+                                  "lmb",
+                                  "glmm_multi_comp_hab_LMB.xlsx"))
 
 
 
