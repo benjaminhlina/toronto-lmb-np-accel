@@ -24,7 +24,12 @@ glimpse(dat)
 
 
 np <- dat %>%
-  filter(common_name_e == "Northern Pike")
+  filter(common_name_e == "Northern Pike") %>%
+  mutate(
+    season = factor(season,
+                    levels = c("Fall", "Winter", "Spring", "Summer")
+    )
+  )
 
 
 
