@@ -80,8 +80,8 @@ glance_summary <- map_df(glance_list, ~as.data.frame(.x), .id = "id") %>%
          link = lapply(model_list, function(x) family(x)$link),
   ) %>%
   mutate(
-         delta_AIC = AIC - first(AIC),
-         AIC_weight = exp(-0.5 * delta_AIC) / sum(exp(-0.5 * delta_AIC))
+    delta_AIC = AIC - first(AIC),
+    AIC_weight = exp(-0.5 * delta_AIC) / sum(exp(-0.5 * delta_AIC))
   ) %>%
   dplyr::select(family, link, model, id:AIC, delta_AIC, AIC_weight, BIC:df.residual) %>%
   arrange(AIC)
@@ -99,7 +99,7 @@ summary(m)
 
 main_effects <- tidy(car::Anova(m))
 
-
+summary(m)
 
 ind_effects <- tidy(m)
 
@@ -138,20 +138,32 @@ hab_season_contrast <- tidy(contrast_effects) %>%
   arrange(adj_p_value, contrast)
 
 
+hab_season_contrast <- hab_season_contrast %>%
+  separate(contrast, into = c("con_1", "con_2"), sep = " / ") %>%
+  mutate(
+    con_1 = str_remove(string = con_1, pattern = "\\("),
+    con_1 = str_remove(string = con_1, pattern = "\\)"),
+    con_2 = str_remove(string = con_2, pattern = "\\("),
+    con_2 = str_remove(string = con_2, pattern = "\\)"),
+  ) %>%
+  separate(con_1, into = c("hab_1", "veg_1", "season_1"), sep = " ") %>%
+  separate(con_2, into = c("hab_2", "veg_2", "season_2"), sep = " ") %>%
+  mutate(
+    hab_1 = paste(hab_1, veg_1, sep = " "),
+    hab_2 = paste(hab_2, veg_2, sep = " ")
+  ) %>%
+  dplyr::select(-c("veg_1", "veg_2")) %>%
+  arrange(season_1, season_2)
 
 
-
+hab_season_contrast
 hab_season_contrast %>%
-  # filter(adj_p_value < 0.05) %>%
-  arrange(
-    # contrast,
-    adj_p_value) %>%
-
+  arrange(season_1, season_2) %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
                                   "habitat-season",
                                   "lmb",
-                                  "glmm_multi_comp_hab_season_LMB.xlsx"))
+                                  "glmm_multi_comp_hab_season_LMB.xlsx"), )
 
 
 
@@ -183,7 +195,7 @@ ind_effects_m1 %>%
 # multiple comparissions ----
 
 multi_comp_m1 <- emmeans(m1, ~ habitat_type,
-                      adjust = "Tukey", type = "response")
+                         adjust = "Tukey", type = "response")
 # contrast(multi_comp, method = "pairwise", adjust = "bonferroni")
 
 
@@ -191,7 +203,7 @@ multi_comp_m1 <- emmeans(m1, ~ habitat_type,
 
 
 contrast_effects_m1 <- contrast(multi_comp_m1, method = "pairwise",
-                             adjust = "bonferroni")
+                                adjust = "bonferroni")
 
 hab_season_contrast_m1 <- tidy(contrast_effects_m1) %>%
   janitor::clean_names() %>%
