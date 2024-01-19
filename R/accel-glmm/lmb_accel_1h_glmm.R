@@ -12,6 +12,8 @@
   library(multcomp)
   library(qs)
   library(purrr)
+  library(stringr)
+  library(tidyr)
 }
 
 # ---- bring in summary dataframe -----
