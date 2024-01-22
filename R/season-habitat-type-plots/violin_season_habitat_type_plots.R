@@ -16,6 +16,34 @@ dat <- qread(here("data-saved",
   filter(habitat_type != is.na(habitat_type))
 glimpse(dat)
 
+dat <- dat %>%
+  mutate(
+    season = factor(season, levels = c("Fall",
+                                       "Winter",
+                                       "Spring",
+                                       "Summer"))
+  )
+
+# ---- create summary dataframes ----
+
+dat_sum_hab <- dat %>%
+  group_by(habitat_type, common_name_e) %>%
+  summarise(
+    accel = mean(mean_accel),
+    sem = sd(mean_accel) / sqrt(n())
+  ) %>%
+  ungroup()
+
+dat_sum_hab
+
+
+dat_sum_hab_season <- dat %>%
+  group_by(common_name_e, season, habitat_type) %>%
+  summarise(
+    accel = mean(mean_accel),
+    sem = sd(mean_accel) / sqrt(n())
+  ) %>%
+  ungroup()
 
 # ----- create violins ----
 
@@ -23,7 +51,17 @@ glimpse(dat)
 p <- ggplot(data = dat,
             aes(x = habitat_type, y = mean_accel)) +
   geom_violin(width = 0.25) +
+  geom_errorbar(data = dat_sum_hab,
+                aes(x = habitat_type, y = accel,
+                    ymax = accel + sem,
+                    ymin = accel - sem), width = 0.05,
+  ) +
+  geom_point(data = dat_sum_hab, aes(
+    x = habitat_type, y = accel,
+  ), size = 3) +
   facet_wrap(. ~ common_name_e) +
+  scale_y_continuous(breaks = seq(0, 3.5, 0.5)) +
+  coord_cartesian(ylim = c(0, 3.75)) +
   theme_bw(
     base_size = 15
   ) +
