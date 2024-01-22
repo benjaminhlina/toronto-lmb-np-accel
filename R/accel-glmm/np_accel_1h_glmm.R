@@ -12,6 +12,8 @@
   library(multcomp)
   library(qs)
   library(purrr)
+  library(stringr)
+  library(tidyr)
 }
 
 # ---- bring in summary dataframe -----
@@ -140,20 +142,40 @@ hab_season_contrast <- tidy(contrast_effects) %>%
 hab_season_contrast
 
 
+hab_season_contrast <- hab_season_contrast %>%
+  separate(contrast, into = c("con_1", "con_2"), sep = " / ") %>%
+  mutate(
+    con_1 = str_remove(string = con_1, pattern = "\\("),
+    con_1 = str_remove(string = con_1, pattern = "\\)"),
+    con_2 = str_remove(string = con_2, pattern = "\\("),
+    con_2 = str_remove(string = con_2, pattern = "\\)"),
+  ) %>%
+  separate(con_1, into = c("hab_1", "veg_1", "season_1"), sep = " ") %>%
+  separate(con_2, into = c("hab_2", "veg_2", "season_2"), sep = " ") %>%
+  mutate(
+    hab_1 = paste(hab_1, veg_1, sep = " "),
+    hab_2 = paste(hab_2, veg_2, sep = " ")
+  ) %>%
+  dplyr::select(-c("veg_1", "veg_2")) %>%
+  arrange(season_1, season_2)
+hab_season_contrast
 
 
 hab_season_contrast %>%
-  # filter(adj_p_value < 0.05) %>%
-  arrange(
-    # contrast,
-    adj_p_value) %>%
-
+  arrange(hab_1, hab_2) %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
                                   "habitat-season",
                                   "np",
                                   "glmm_multi_comp_hab_season_np.xlsx"))
-
+hab_season_contrast %>%
+  filter(season_1 == season_2) %>%
+  arrange(hab_1, hab_2) %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat-season",
+                                  "np",
+                                  "glmm_multi_comp_hab_within_season_np.xlsx"))
 
 
 # ---- create specific stuff for model saving -----
