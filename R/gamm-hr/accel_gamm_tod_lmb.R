@@ -48,6 +48,7 @@ lmb <- dat %>%
     year = as.factor(year)
   )
 
+glimpse(lmb)
 # ---- model ----
 m <- bam(mean_accel ~ season +
            s(tod, by = season, k = 4,
