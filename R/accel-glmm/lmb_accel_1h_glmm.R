@@ -158,12 +158,20 @@ hab_season_contrast <- hab_season_contrast %>%
 
 hab_season_contrast
 hab_season_contrast %>%
-  arrange(season_1, season_2) %>%
+  arrange(hab_1, hab_2) %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
                                   "habitat-season",
                                   "lmb",
-                                  "glmm_multi_comp_hab_season_LMB.xlsx"), )
+                                  "glmm_multi_comp_hab_season_LMB.xlsx"))
+hab_season_contrast %>%
+  filter(season_1 == season_2) %>%
+  arrange(hab_1, hab_2) %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat-season",
+                                  "lmb",
+                                  "glmm_multi_comp_hab_within_season_LMB.xlsx"))
 
 
 
