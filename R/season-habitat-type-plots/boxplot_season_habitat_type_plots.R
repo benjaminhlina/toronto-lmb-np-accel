@@ -218,3 +218,42 @@ ggsave(filename = here("plots",
                        "boxplot",
                        "hab_season_spp_boxplot_labled_no_outlier.png"),
        width = 14, height = 11, plot = p11)
+
+
+
+p12 <- ggplot(data = dat,
+             aes(x = season, y = mean_accel,
+                 fill = habitat_type)) +
+  geom_boxplot(outlier.shape = NA) +
+  facet_wrap(. ~ common_name_e) +
+  scale_fill_viridis_d(end = 0.85, name = "Habitat Type",
+                       alpha = 0.5) +
+  theme_bw(
+    base_size = 15
+  ) +
+  theme(
+    panel.grid = element_blank(),
+    strip.background = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = c(0.95, 0.75),
+    legend.box.background = element_blank(),
+    legend.background = element_blank(),
+    strip.text = element_blank(),
+  ) +
+  labs(x = "Season",
+       y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
+  )
+# p6
+p13 <- (p5 +
+          coord_cartesian(ylim = c(0, 2)) +
+    theme(
+      # axis.text.x = element_blank(),
+      axis.title.x = element_blank()
+    )) / (p12 +  coord_cartesian(ylim = c(0, 2))) +
+  plot_annotation(tag_levels = "a", tag_suffix = ")")
+
+
+ggsave(filename = here("plots",
+                       "boxplot",
+                       "hab_season_x_spp_boxplot_labled_no_outlier.png"),
+       width = 14, height = 11, plot = p13)
