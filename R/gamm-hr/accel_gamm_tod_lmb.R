@@ -38,42 +38,105 @@ dat <- dat %>%
 
 glimpse(dat)
 
-
+# ---- filter out lmb and fix column classes for gamming -----
 lmb <- dat %>%
   filter(common_name_e %in% "Largemouth Bass" &
            habitat_type != is.na(habitat_type)) %>%
   mutate(
-    season = as.factor(season),
+    season = as.factor(season,
+                       levels = c("Fall", "Winter",
+                                  "Spring", "Summer")),
     animal_id = as.factor(animal_id),
-    year = as.factor(year)
+    year = as.factor(year),
+    habitat_type = as.factor(habitat_type),
+    hab_season = paste(season, habitat_type, sep = " ")
   )
 
 glimpse(lmb)
+
+
+
+# ---- look at habitat type season sample numbers -----
+
+lmb_smp <- lmb %>%
+  group_by(season, habitat_type, hab_season) %>%
+  summarise(
+    n_det = n_distinct(animal_id),
+    n_hr = n_distinct(tod)
+  ) %>%
+  ungroup()
+
+lmb_smp_f <- lmb_smp %>%
+  filter(n_hr > 23)
+
+lmb_smp_f
+lmb_1 <- lmb %>%
+  filter(hab_season %in% lmb_smp_f$hab_season &
+           hab_season != "Summer Mod/Dense SAV")
+
+
+# ---- add in start column for autocorrelation -----
+lmb_1 <- lmb_1 %>%
+  arrange(animal_id, year, time_bin_1h) %>%
+  group_by(animal_id) %>%
+  mutate(start_event = if_else(time_bin_1h == min(time_bin_1h), true = TRUE,
+                               false = FALSE)) %>%
+  ungroup() %>%
+  arrange(time_bin_1h, start_event)
+
+
+# ---- check distribution -----
+ac <- lmb_1$mean_accel
+
+descdist(ac)
+
+fit_gamma <- fitdist(data = ac, distr = "gamma", method = "mme")
+
+plot(fit_gamma)
+
 # ---- model ----
-m <- bam(mean_accel ~ season +
-           s(tod, by = season, k = 4,
+m <- bam(mean_accel ~ season * habitat_type +
+           s(tod,
+             by = season,
+             # by = interaction(season, habitat_type),
+             k = 4,
+             bs = "cc") +
+           s(tod, by = habitat_type, k = 4,
              bs = "cc") +
            s(animal_id, bs = "re") +
            s(year, bs = "re"),
-         family = gaussian(link = "log"),
+         family = Gamma(link = "log"),
          select = TRUE,
-         data = lmb)
+         data = lmb_1)
 
-anova.gam(m)
-# draw(m)
-# appraise(m)
+# anova.gam(m)
+draw(m)
+appraise(m)
 
+r1 <- start_value_rho(m, plot = TRUE)
+r1
+
+m1 <- update(m,
+             select = TRUE,
+             discrete = TRUE,
+             rho = r1,
+             AR.start = start_event)
+
+
+draw(m1)
+appraise(m1)
+acf_resid(m1)
 # --- predict ----
-lmb_1 <- lmb %>%
+lmb_2 <- lmb_1 %>%
   mutate(
     animal_id = "a",
     year = "0"
   )
 
-fits <- predict.bam(m, newdata = lmb_1, se.fit = TRUE,
+fits <- predict.gam(m1, newdata = lmb_2, se.fit = TRUE,
                     exclude = c("s(animal_id)",
                                 "s(year)"))
-preds <- data.frame(lmb_1, fits) %>%
+preds <- data.frame(lmb_2, fits) %>%
   mutate(
     lower = exp(1) ^ (fit - 1.98 * se.fit),
     upper = exp(1) ^ (fit + 1.98 * se.fit),
