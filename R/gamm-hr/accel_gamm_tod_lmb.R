@@ -148,76 +148,111 @@ glimpse(preds)
 
 #
 #
-p <- ggplot(data = dat, aes(x = factor(tod), y = mean_accel)) +
-  geom_boxplot(aes(fill = season)) +
-  facet_wrap(. ~ common_name_e) +
-  theme_bw(
-    base_size = 15
-  ) +
-  scale_fill_viridis_d(end = 0.85, name = "Season",
-                       alpha = 0.5) +
-  theme(
-    strip.background = element_blank(),
-  ) +
-  labs(
-    x = "Hour",
-    y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
-  )
+# p <- ggplot(data = dat, aes(x = factor(tod), y = mean_accel)) +
+#   geom_boxplot(aes(fill = season)) +
+#   facet_wrap(. ~ common_name_e) +
+#   theme_bw(
+#     base_size = 15
+#   ) +
+#   scale_fill_viridis_d(end = 0.85, name = "Season",
+#                        alpha = 0.5) +
+#   theme(
+#     strip.background = element_blank(),
+#   ) +
+#   labs(
+#     x = "Hour",
+#     y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
+#   )
+#
+# p
 
-p
-
-lmb_sum <- lmb %>%
-  group_by(season, tod) %>%
+lmb_sum <- lmb_1 %>%
+  group_by(season, habitat_type, tod) %>%
   summarise(
+    n_tags = n_distinct(animal_id),
     mean_ac = mean(mean_accel),
     sem = sd(mean_accel) / sqrt(n())
   ) %>%
   ungroup()
 
+
+# lmb_sum_sm <- lmb_sum %>%
+#   filter(season == "Summer" & habitat_type == "Mod/Dense SAV")
+#
+# lmb_sum_sm
+#
+# ggplot() +
+#   geom_errorbar(data = lmb_sum_sm, width = 0.15,
+#                 aes(group = habitat_type,
+#                     x = tod, y = mean_ac,
+#                     ymin = mean_ac - sem,
+#                     ymax = mean_ac + sem),
+#                 position = position_jitter(width = 0.3,
+#                                            seed = 1)
+#   ) +
+#   geom_point(data = lmb_sum_sm,
+#              shape = 21,
+#              aes(x = tod,
+#                  y = mean_ac,
+#                  fill = habitat_type),
+#              size = 3, stroke = 0.5,
+#              position = position_jitter(width = 0.3, seed = 1)
+#              )
+#
+
 p1 <- ggplot() +
-  geom_errorbar(data = lmb_sum, width = 0.15,
-                aes(group = season,
-                    x = tod, y = mean_ac,
-                    ymin = mean_ac - sem,
-                    ymax = mean_ac + sem),
-                position = position_jitter(width = 0.2,
-                                           seed = 1)
-  ) +
+  # geom_errorbar(data = lmb_sum, width = 0.15,
+  #               aes(group = habitat_type,
+  #                   x = tod, y = mean_ac,
+  #                   ymin = mean_ac - sem,
+  #                   ymax = mean_ac + sem),
+  #               position = position_jitter(width = 0.2,
+  #                                          seed = 1)
+  # ) +
   geom_point(data = lmb_sum,
              shape = 21,
              aes(x = tod,
                  y = mean_ac,
-                 fill = season),
-             size = 2,
+                 fill = habitat_type),
+             size = 3, stroke = 0.5, alpha = 0.5,
              position = position_jitter(width = 0.2, seed = 1)) +
+  # geom_line(data = lmb_sum,
+  #            # shape = 21,
+  #            aes(x = tod,
+  #                y = mean_ac,
+  #                colour = habitat_type),
+  #            # size = 3, stroke = 0.5,
+  #            # position = position_jitter(width = 0.2, seed = 1)
+  #           ) +
   geom_line(data = preds, aes(x = tod,
-                              y = fit_t, colour = season)) +
+                              y = fit_t, colour = habitat_type)) +
   geom_ribbon(data = preds, aes(x = tod,
-                                y = fit_t, fill = season,
+                                y = fit_t, fill = habitat_type,
                                 ymin = lower,
                                 ymax = upper),
               alpha = 0.2) +
-  # facet_wrap(. ~ common_name_e) +
-  scale_fill_viridis_d(end = 0.85, name = "Season",
+  lemon::facet_rep_wrap(. ~ season, repeat.tick.labels = TRUE) +
+  scale_fill_viridis_d(end = 0.85, name = "Habitat Type",
                        alpha = 0.5) +
-  scale_colour_viridis_d(end = 0.85, name = "Season"
+  scale_colour_viridis_d(end = 0.85, name = "Habitat Type"
   ) +
   theme_bw(
     base_size = 15
   ) +
   theme(
     strip.background = element_blank(),
-    panel.grid = element_blank()
+    panel.grid = element_blank(),
+    legend.position = c(0.92, 0.94)
   ) +
   labs(
     x = "Hour",
     y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
   )
 
-
+# p1
 ggsave(here("plots",
             "hour-gamm-accel",
-            "gamm_hour_season.png"), plot = p1,
-       width = 11, height = 8.5)
+            "gamm_hour_season_habitat_revised_no_errorbars.png"), plot = p1,
+       width = 11 * 1.5, height = 8.5 * 1.5)
 
 
