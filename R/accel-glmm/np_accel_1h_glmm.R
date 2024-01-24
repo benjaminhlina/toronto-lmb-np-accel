@@ -33,7 +33,8 @@ np <- dat %>%
     )
   )
 
-
+fit_gamma <- fitdist(np$mean_accel, distr = "gamma", method = "mme")
+plot(fit_gamma)
 
 # ---- start our models for np ----
 glimpse(np)
@@ -51,9 +52,9 @@ m2 <- update(m, . ~ season + (1 | animal_id),  REML = FALSE)
 res <- simulateResiduals(m)
 plot(res)
 
+plot(m$obj)
 
-
-res_m1 <- simulateResiduals(m1)
+  res_m1 <- simulateResiduals(m1)
 plot(res_m1)
 res_m2 <- simulateResiduals(m2)
 plot(res_m2)
