@@ -1,0 +1,9 @@
+common_name_e,season,Deep/Low SAV,Exposed/Low SAV,Mod/Dense SAV,Shallow/Dense SAV,Shallow/Low SAV
+Largemouth Bass,Fall,,*,*,,*
+Largemouth Bass,Winter,,,,,
+Largemouth Bass,Spring,*,*,*,,**
+Largemouth Bass,Summer,*,*,*,,**
+Northern Pike,Fall,,****,,*,
+Northern Pike,Winter,,****,,,
+Northern Pike,Spring,,**,,**,
+Northern Pike,Summer,,***,,**,
