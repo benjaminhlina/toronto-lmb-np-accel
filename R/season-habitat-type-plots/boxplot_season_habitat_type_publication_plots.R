@@ -36,6 +36,18 @@ dat <- dat %>%
     )
   )
 
+# ---- bring in letters for without season just hab ----
+
+among_hab <- readr::read_csv(here("Results",
+                                  "comparison-letters-final",
+                                  "among_habitat_compare_lmb_np.csv"))
+
+among_hab_long <- among_hab %>%
+  pivot_longer(cols = -c(common_name_e),
+               names_to = "habitat_type",
+               values_to = "letters")
+
+among_hab_long
 # ---- bring in letters ----
 within_season <- readr::read_csv(here("Results",
                                       "comparison-letters-final",
@@ -72,11 +84,27 @@ among_season_long
 among_season_long$common_name_e
 unique(dat$common_name_e)
 
+# ---- letter prep ----
+
+sig_let_hab <-  tibble(
+  common_name_e = among_hab_long$common_name_e,
+  letter = among_hab_long$letters,
+  x = rep(seq(1, 5, 1), 2),
+  y = c(
+    1.17, 1.30, 1.72, 1.05, 1.29,
+    0.37, 0.54, 0.42, 0.48, 0.42
+
+  )
+)
 
 # ----- create boxplots ----
 p5 <- ggplot(data = dat,
              aes(x = habitat_type, y = mean_accel)) +
   geom_boxplot(width = 0.25, outlier.shape = NA) +
+  geom_text(data = sig_let_hab, aes(x = x,
+                                y = y,
+                                label = letter),
+            size = 5) +
   facet_wrap(. ~ common_name_e) +
   theme_bw(
     base_size = 15
@@ -202,7 +230,6 @@ p12 <- ggplot() +
   theme(
     panel.grid = element_blank(),
     strip.background = element_blank(),
-    axis.text.x = element_text(angle = 45, hjust = 1),
     legend.position = c(0.92, 0.75),
     legend.box.background = element_blank(),
     legend.background = element_blank(),
@@ -228,6 +255,12 @@ p13 <- (p5 +
 # p13
 ggsave(filename = here("plots",
                        "boxplot",
-                       "hab_season_x_spp_boxplot_labled_no_outlier.png"),
+                       "Publication Plots",
+                       "hab_season_spp_boxplot_labelled_no_outlier.png"),
+       width = 14, height = 11, plot = p13)
+ggsave(filename = here("plots",
+                       "boxplot",
+                       "Publication Plots",
+                       "hab_season_spp_boxplot_labelled_no_outlier.pdf"),
        width = 14, height = 11, plot = p13)
 
