@@ -162,23 +162,38 @@ hab_season_contrast <- hab_season_contrast %>%
 hab_season_contrast
 
 
-hab_season_contrast %>%
-  arrange(hab_1, hab_2) %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "np",
-                                  "glmm_multi_comp_hab_season_np.xlsx"))
+# hab_season_contrast %>%
+#   arrange(hab_1, hab_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "np",
+#                                   "glmm_multi_comp_hab_season_np.xlsx"))
+# hab_season_contrast %>%
+#   filter(season_1 == season_2) %>%
+#   arrange(hab_1, hab_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "np",
+#                                   "glmm_multi_comp_hab_within_season_np.xlsx"))
+
 hab_season_contrast %>%
   filter(season_1 == season_2) %>%
-  arrange(hab_1, hab_2) %>%
+  arrange(season_1, season_2) %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
                                   "habitat-season",
                                   "np",
                                   "glmm_multi_comp_hab_within_season_np.xlsx"))
-
-
+hab_season_contrast %>%
+  filter(hab_1 == hab_2) %>%
+  arrange(hab_1, hab_2) %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat-season",
+                                  "np",
+                                  "glmm_multi_comp_hab_within_hab_np.xlsx"))
 # ---- create specific stuff for model saving -----
 car::Anova(m1)
 summary(m1)
