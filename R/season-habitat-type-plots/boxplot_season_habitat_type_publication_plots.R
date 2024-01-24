@@ -48,14 +48,18 @@ within_season_long <- within_season %>%
 
 within_season_long
 
+# ---- bring in stars ----
 among_season <- readr::read_csv(here("Results",
                                      "comparison-letters-final",
-                                     "among_season_habitat_compare_lmb.csv"))
+                                     "among_season_habitat_compare_lmb_np.csv"))
+
+among_season
 among_season_long <- among_season %>%
-  pivot_longer(cols = -season,
+  pivot_longer(cols = -c(common_name_e, season),
                names_to = "habitat_type",
                values_to = "stars") %>%
-  filter(!(season %in% "winter" &
+  filter(!(common_name_e %in% "Largemouth Bass" &
+             season %in% "Winter" &
              habitat_type %in% c("Exposed/Low SAV",
                                  "Mod/Dense SAV"))) %>%
   mutate(
@@ -65,11 +69,28 @@ among_season_long <- among_season %>%
         "NA")
   )
 among_season_long
-among_season_long$stars
-
+among_season_long$common_name_e
+unique(dat$common_name_e)
 
 
 # ----- create boxplots ----
+p5 <- ggplot(data = dat,
+             aes(x = habitat_type, y = mean_accel)) +
+  geom_boxplot(width = 0.25, outlier.shape = NA) +
+  facet_wrap(. ~ common_name_e) +
+  theme_bw(
+    base_size = 15
+  ) +
+  theme(
+    panel.grid = element_blank(),
+    strip.background = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  labs(x = "Habitat Type",
+       y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
+  )
+
+
 
 # m <- dat %>%
 #   group_split(season, habitat_type) %>%
@@ -131,19 +152,26 @@ sig_let <- tibble(
 )
 
 sig_stars <- tibble(
-  common_name_e = c(rep("Largemouth Bass", 18)),
-  # rep("", 20), )
+  common_name_e = among_season_long$common_name_e,
   stars = among_season_long$stars,
   x = c(
     0.7, 0.85, 1, 1.15, 1.3,
     1.75, 2, 2.25,
+    2.7, 2.85, 3, 3.15, 3.3,
+    3.7, 3.85, 4, 4.15, 4.3,
+    0.7, 0.85, 1, 1.15, 1.3,
+    1.7, 1.85, 2, 2.15, 2.3,
     2.7, 2.85, 3, 3.15, 3.3,
     3.7, 3.85, 4, 4.15, 4.3
   ),
   y = c(0.75, 0.93, 1.1, 0.85, 1.05,
         0.63, 0.4, 0.45,
         1.33, 0.85, 1.15, 1.25, 1.1,
-        1.93, 1.73, 1.75, 1.73, 1.92)
+        1.93, 1.73, 1.75, 1.73, 1.92,
+        0.4, 0.41, 0.38, 0.48, 0.37,
+        0.3, 0.47, 0.38, 0.65, 0.27,
+        0.5, 0.55, 0.5, 0.4, 0.61,
+        0.55, 0.53, 0.55, 0.47, 0.53)
 )
 
 
