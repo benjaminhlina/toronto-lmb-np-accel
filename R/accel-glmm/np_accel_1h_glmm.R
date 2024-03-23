@@ -150,10 +150,10 @@ glance_summary <- map_df(glance_list, ~as.data.frame(.x), .id = "id") %>%
 # view model selection ------
 glance_summary
 
-glance_summary %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "glmm_model_selection_hab_season_np.xlsx"))
+# glance_summary %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "glmm_model_selection_hab_season_np.xlsx"))
 
 res <- simulateResiduals(m5)
 plot(res)
@@ -188,19 +188,20 @@ ind_effects
 
 
 # main_effects %>%
-main_effects %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "np",
-                                  "glmm_main_effects_hab_season_np.xlsx"))
-ind_effects %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "np",
-                                  "glmm_ind_effects_hab_season_np.xlsx"))
-
+# main_effects %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "np",
+#                                   "glmm_main_effects_hab_season_np.xlsx"))
+# ind_effects %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "np",
+#                                   "glmm_ind_effects_hab_season_np.xlsx"))
+#
+# summary(m5)
 # multiple comparissions ----
 
 multi_comp <- emmeans(m, ~ habitat_type * season,
