@@ -98,7 +98,7 @@ p <- (dp +
           )) / (dp_hab) +
   plot_annotation(tag_levels = "a", tag_suffix = ")")
 
-
+p
 
 
 ggsave(filename = here("plots",
