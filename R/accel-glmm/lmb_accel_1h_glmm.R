@@ -116,7 +116,7 @@ glance_summary %>%
                                   "glmm_model_selection_hab_season_lmb.xlsx"))
 
 # check model ----
-res <- simulateResiduals(m)
+res <- simulateResiduals(m4)
 plot(res)
 
 par(mfrow = c(1,2))
@@ -124,27 +124,27 @@ plotResiduals(res, interaction(lmb$habitat_type, lmb$season))
 plotResiduals(res, lmb$season)
 plotResiduals(res, lmb$habitat_type)
 
-hist(residuals(m))
+hist(res)
 
 
 
-hist(residuals(m))
+hist(residuals(m4))
 
 res_m1 <- simulateResiduals(m1)
 plot(res_m1)
 res_m2 <- simulateResiduals(m2)
 plot(res_m2)
 # create specific stuff for model saving -----
-car::Anova(m)
-summary(m)
+car::Anova(m4)
+summary(m4)
 
-main_effects <- tidy(car::Anova(m))
+main_effects <- tidy(car::Anova(m4))
 
-summary(m)
+summary(m4)
 
-ind_effects <- tidy(m)
+ind_effects <- tidy(m4)
 
-
+main_effects
 # main_effects %>%
 # main_effects %>%
 #   openxlsx::write.xlsx(here::here("results",
