@@ -119,7 +119,7 @@ m1 <- update(m,
              discrete = TRUE,
              rho = r1,
              AR.start = start_event)
-
+predict_response(m_gam, terms = "Days", exclude = "s(Subject)", newdata.guaranteed = TRUE)
 
 draw(m1)
 appraise(m1)
@@ -134,6 +134,14 @@ lmb_2 <- lmb %>%
 fits <- predict.gam(m1, newdata = lmb_2, se.fit = TRUE,
                     exclude = c("s(animal_id)",
                                 "s(year)"))
+
+
+# ggeffects::predict_response(m,
+#                  terms = c("season", "tod"),
+#                  exclude =  c("s(animal_id)",
+#                               "s(year)"),
+#                  newdata.guaranteed = TRUE) %>%
+#   glimpse()
 preds <- data.frame(lmb_2, fits) %>%
   mutate(
     lower = exp(1) ^ (fit - 1.98 * se.fit),
