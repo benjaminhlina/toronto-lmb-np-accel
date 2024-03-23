@@ -343,7 +343,78 @@ hab_season_contrast_m1
 
 
 
-hab_season_contrast_m1 %>%
+# hab_season_contrast_m1 %>%
+#   # filter(adj_p_value < 0.05) %>%
+#   arrange(
+#     # contrast,
+#     adj_p_value) %>%
+#
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat",
+#                                   "np",
+#                                   "glmm_multi_comp_hab_np.xlsx"))
+#
+# ---- DIEL Period ----
+car::Anova(m3)
+car::Anova(m7)
+
+summary(m3)
+summary(m7)
+
+res <- simulateResiduals(m3)
+plot(res)
+hist(res)
+
+res <- simulateResiduals(m7)
+plot(res)
+hist(res)
+
+
+
+
+# --- check effects ----
+
+main_effects_dp <- tidy(car::Anova(m3))
+
+main_effects_dp
+
+ind_effects_dp <- broom.mixed::tidy(m3)
+
+ind_effects_dp
+
+main_effects_dp %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period",
+                                  "np",
+                                  "glmm_main_effects_dp_np.xlsx"))
+ind_effects_dp %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period",
+                                  "np",
+                                  "glmm_ind_effects_dp_np.xlsx"))
+
+
+# ---- multiple comparisons ----
+multi_comp_m3 <- emmeans(m3, ~ day_night,
+                         adjust = "Tukey", type = "response")
+
+
+contrast_effects_m3 <- contrast(multi_comp_m3, method = "pairwise",
+                                adjust = "bonferroni")
+
+
+cld(contrast_effects_m3, delta = 0.05, Letters = letters, sort = TRUE)
+
+day_night_contrast_m3 <- tidy(contrast_effects_m3) %>%
+  janitor::clean_names() %>%
+  arrange(adj_p_value, contrast)
+day_night_contrast_m3
+
+
+day_night_contrast_m3 %>%
   # filter(adj_p_value < 0.05) %>%
   arrange(
     # contrast,
@@ -351,130 +422,173 @@ hab_season_contrast_m1 %>%
 
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
-                                  "habitat",
+                                  "diel-period",
                                   "np",
-                                  "glmm_multi_comp_hab_np.xlsx"))
+                                  "glmm_multi_comp_diel_period_np.xlsx"))
 
 
-# ---- ggeeffects ----
+# ----- contrast habitat and diel period ----
 
-pres <- predict_response(m, terms = c("season", "habitat_type", "day_night") )
-pres
-# tp <- test_predictions(m, terms = c("season", "habitat_type", "day_night"))
+main_effects_dp_hab <- tidy(car::Anova(m7))
 
-p <- as_tibble(pres) %>%
-  ggplot() +
-  geom_linerange(aes(colour = group,
-                     x = x, y = predicted,
-                     ymin = conf.low,
-                     ymax = conf.high),
-                 position = position_dodge(width = 0.5)) +
-  geom_point(shape = 21, colour = "black", size = 3,
-             aes(y = predicted, x = x, fill = group),
-             position = position_dodge(width = 0.5)) +
+main_effects_dp_hab
 
-  scale_y_continuous(breaks = seq(0, 0.6, 0.1)) +
-  coord_cartesian(ylim = c(0.1, 0.6)) +
-  theme_bw() +
-  lemon::facet_rep_wrap(.~ facet, repeat.tick.labels = TRUE) +
-  scale_fill_viridis_d(name = "Habitat Type",
-                       option = "D", end = 0.85) +
-  scale_colour_viridis_d(name = "Habitat Type",
-                       option = "D", end = 0.85) +
-  theme(
-    strip.background = element_blank(),
-    panel.grid = element_blank(),
-    plot.title = element_text(hjust = 0.5),
-    legend.position = "inside",
-    legend.position.inside = c(0.1, 0.89)
-  ) +
-  labs(
-    title = "Northern Pike",
-    x = "Season",
-    y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
-  )
-# p
-ggsave(plot = p, filename = here::here("Plots",
-                     "predicted-results",
-                     "preliminary_northern_pike_sea_hab_day_bh_version.png"), width = 11,
-       height = 8.5)
-summary(m5)
-pres_1 <- predict_response(m5, terms = c("season", "habitat_type"))
-pres_1
-tp <- test_predictions(m5, terms = c("season", "habitat_type"))
-p1 <- as_tibble(pres_1) %>%
-  ggplot() +
-  geom_linerange(aes(colour = group,
-                     x = x, y = predicted,
-                     ymin = conf.low,
-                     ymax = conf.high),
-                 position = position_dodge(width = 0.5)) +
-  geom_point(shape = 21, colour = "black", size = 3,
-             aes(y = predicted, x = x, fill = group),
-             position = position_dodge(width = 0.5)) +
+ind_effects_dp_hab <- broom.mixed::tidy(m7)
 
-  scale_y_continuous(breaks = seq(0, 0.6, 0.1)) +
-  coord_cartesian(ylim = c(0.1, 0.3)) +
-  theme_bw() +
-  # lemon::facet_rep_wrap(.~ facet, repeat.tick.labels = TRUE) +
-  scale_fill_viridis_d(name = "Habitat Type",
-                       option = "D", end = 0.85) +
-  scale_colour_viridis_d(name = "Habitat Type",
-                       option = "D", end = 0.85) +
-  theme(
-    strip.background = element_blank(),
-    panel.grid = element_blank(),
-    plot.title = element_text(hjust = 0.5),
-    legend.position = "inside",
-    legend.position.inside = c(0.1, 0.89)
-  ) +
-  labs(
-    title = "Northern Pike",
-    x = "Season",
-    y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
-  )
-p1
-ggsave(plot = p1, filename = here::here("Plots",
-                     "predicted-results",
-                     "preliminary_northern_pike_sea_hab_bh_version.png"), width = 11,
-       height = 8.5)
-pres_2 <- predict_response(m7, terms = c("day_night", "habitat_type"))
-pres_2
-p2 <- as_tibble(pres_2) %>%
-  ggplot() +
-  geom_linerange(aes(colour = group,
-                     x = x, y = predicted,
-                     ymin = conf.low,
-                     ymax = conf.high),
-                 position = position_dodge(width = 0.5)) +
-  geom_point(shape = 21, colour = "black", size = 3,
-             aes(y = predicted, x = x, fill = group),
-             position = position_dodge(width = 0.5)) +
-
-  scale_y_continuous(breaks = seq(0, 0.6, 0.1)) +
-  coord_cartesian(ylim = c(0.1, 0.3)) +
-  theme_bw() +
-  # lemon::facet_rep_wrap(.~ facet, repeat.tick.labels = TRUE) +
-  scale_fill_viridis_d(name = "Habitat Type",
-                       option = "D", end = 0.85) +
-  scale_colour_viridis_d(name = "Habitat Type",
-                       option = "D", end = 0.85) +
-  theme(
-    strip.background = element_blank(),
-    panel.grid = element_blank(),
-    plot.title = element_text(hjust = 0.5),
-    legend.position = "inside",
-    legend.position.inside = c(0.1, 0.89)
-  ) +
-  labs(
-    title = "Northern Pike",
-    x = "Diel Period",
-    y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
-  )
-p2
+ind_effects_dp_hab
 
 
-ggsave(plot = p2, filename = here::here("Plots",
-                     "predicted-results",
-                     "preliminary_northern_pike_hab_day_night_bh_version.png"), width = 11,
-       height = 8.5)
+main_effects_dp_hab %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period-habitat",
+                                  "np",
+                                  "glmm_main_effects_dp_hab_np.xlsx"))
+ind_effects_dp_hab %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period-habitat",
+                                  "np",
+                                  "glmm_ind_effects_dp_hab_np.xlsx"))
+
+
+
+# ---- multiple comparisons ----
+multi_comp_m7 <- emmeans(m7, ~ day_night * habitat_type,
+                         adjust = "bonferroni", type = "response")
+
+
+contrast_effects_m7 <- contrast(multi_comp_m7, method = "pairwise",
+                                adjust = "bonferroni")
+
+
+cld(contrast_effects_m7, delta = 0.05, Letters = letters, sort = TRUE)
+
+day_night_contrast_m7 <- tidy(contrast_effects_m7) %>%
+  janitor::clean_names() %>%
+  arrange(adj_p_value, contrast)
+day_night_contrast_m7
+
+
+# # ---- ggeeffects ----
+#
+# pres <- predict_response(m, terms = c("season", "habitat_type", "day_night") )
+# pres
+# # tp <- test_predictions(m, terms = c("season", "habitat_type", "day_night"))
+#
+# p <- as_tibble(pres) %>%
+#   ggplot() +
+#   geom_linerange(aes(colour = group,
+#                      x = x, y = predicted,
+#                      ymin = conf.low,
+#                      ymax = conf.high),
+#                  position = position_dodge(width = 0.5)) +
+#   geom_point(shape = 21, colour = "black", size = 3,
+#              aes(y = predicted, x = x, fill = group),
+#              position = position_dodge(width = 0.5)) +
+#
+#   scale_y_continuous(breaks = seq(0, 0.6, 0.1)) +
+#   coord_cartesian(ylim = c(0.1, 0.6)) +
+#   theme_bw() +
+#   lemon::facet_rep_wrap(.~ facet, repeat.tick.labels = TRUE) +
+#   scale_fill_viridis_d(name = "Habitat Type",
+#                        option = "D", end = 0.85) +
+#   scale_colour_viridis_d(name = "Habitat Type",
+#                        option = "D", end = 0.85) +
+#   theme(
+#     strip.background = element_blank(),
+#     panel.grid = element_blank(),
+#     plot.title = element_text(hjust = 0.5),
+#     legend.position = "inside",
+#     legend.position.inside = c(0.1, 0.89)
+#   ) +
+#   labs(
+#     title = "Northern Pike",
+#     x = "Season",
+#     y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
+#   )
+# # p
+# ggsave(plot = p, filename = here::here("Plots",
+#                      "predicted-results",
+#                      "preliminary_northern_pike_sea_hab_day_bh_version.png"), width = 11,
+#        height = 8.5)
+# summary(m5)
+# pres_1 <- predict_response(m5, terms = c("season", "habitat_type"))
+# pres_1
+# tp <- test_predictions(m5, terms = c("season", "habitat_type"))
+# p1 <- as_tibble(pres_1) %>%
+#   ggplot() +
+#   geom_linerange(aes(colour = group,
+#                      x = x, y = predicted,
+#                      ymin = conf.low,
+#                      ymax = conf.high),
+#                  position = position_dodge(width = 0.5)) +
+#   geom_point(shape = 21, colour = "black", size = 3,
+#              aes(y = predicted, x = x, fill = group),
+#              position = position_dodge(width = 0.5)) +
+#
+#   scale_y_continuous(breaks = seq(0, 0.6, 0.1)) +
+#   coord_cartesian(ylim = c(0.1, 0.3)) +
+#   theme_bw() +
+#   # lemon::facet_rep_wrap(.~ facet, repeat.tick.labels = TRUE) +
+#   scale_fill_viridis_d(name = "Habitat Type",
+#                        option = "D", end = 0.85) +
+#   scale_colour_viridis_d(name = "Habitat Type",
+#                        option = "D", end = 0.85) +
+#   theme(
+#     strip.background = element_blank(),
+#     panel.grid = element_blank(),
+#     plot.title = element_text(hjust = 0.5),
+#     legend.position = "inside",
+#     legend.position.inside = c(0.1, 0.89)
+#   ) +
+#   labs(
+#     title = "Northern Pike",
+#     x = "Season",
+#     y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
+#   )
+# p1
+# ggsave(plot = p1, filename = here::here("Plots",
+#                      "predicted-results",
+#                      "preliminary_northern_pike_sea_hab_bh_version.png"), width = 11,
+#        height = 8.5)
+# pres_2 <- predict_response(m7, terms = c("day_night", "habitat_type"))
+# pres_2
+# p2 <- as_tibble(pres_2) %>%
+#   ggplot() +
+#   geom_linerange(aes(colour = group,
+#                      x = x, y = predicted,
+#                      ymin = conf.low,
+#                      ymax = conf.high),
+#                  position = position_dodge(width = 0.5)) +
+#   geom_point(shape = 21, colour = "black", size = 3,
+#              aes(y = predicted, x = x, fill = group),
+#              position = position_dodge(width = 0.5)) +
+#
+#   scale_y_continuous(breaks = seq(0, 0.6, 0.1)) +
+#   coord_cartesian(ylim = c(0.1, 0.3)) +
+#   theme_bw() +
+#   # lemon::facet_rep_wrap(.~ facet, repeat.tick.labels = TRUE) +
+#   scale_fill_viridis_d(name = "Habitat Type",
+#                        option = "D", end = 0.85) +
+#   scale_colour_viridis_d(name = "Habitat Type",
+#                        option = "D", end = 0.85) +
+#   theme(
+#     strip.background = element_blank(),
+#     panel.grid = element_blank(),
+#     plot.title = element_text(hjust = 0.5),
+#     legend.position = "inside",
+#     legend.position.inside = c(0.1, 0.89)
+#   ) +
+#   labs(
+#     title = "Northern Pike",
+#     x = "Diel Period",
+#     y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
+#   )
+# p2
+#
+#
+# ggsave(plot = p2, filename = here::here("Plots",
+#                      "predicted-results",
+#                      "preliminary_northern_pike_hab_day_night_bh_version.png"), width = 11,
+#        height = 8.5)
