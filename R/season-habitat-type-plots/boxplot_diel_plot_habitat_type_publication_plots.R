@@ -107,3 +107,10 @@ ggsave(filename = here("plots",
                        paste("hab_diel_period_spp_boxplot_labelled_no_outlier_",
                              Sys.Date(), ".png", sep = "")),
        width = 14, height = 11, plot = p)
+
+ggsave(filename = here("plots",
+                       "boxplot",
+                       "Publication Plots",
+                       paste("hab_diel_period_spp_boxplot_labelled_no_outlier_",
+                             Sys.Date(), ".pdf", sep = "")),
+       width = 14, height = 11, plot = p)
