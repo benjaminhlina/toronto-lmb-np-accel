@@ -46,9 +46,9 @@ plot(gammas)
 
 # ---- start our models for LMB ----
 glimpse(lmb)
-m <- glmmTMB(mean_accel ~ habitat_type * season + (1 | animal_id) +
-             ar1(season + 0 | animal_id) +
-             ar1(habitat_type + 0 | animal_id) ,
+m <- glmmTMB(mean_accel ~ habitat_type * season * day_night +
+               (1 | animal_id) +
+             ar1(season + 0 | animal_id),
              data = lmb,
              family = lognormal(link = "log")
 )
@@ -56,27 +56,23 @@ m1 <- update(m, . ~ habitat_type + (1 | animal_id),  REML = FALSE)
 
 m2 <- update(m, . ~ season + (1 | animal_id),  REML = FALSE)
 
+m3 <- update(m, . ~ day_night + (1 | animal_id),  REML = FALSE)
+
+m4 <- update(m, . ~ habitat_type * season +
+               (1 | animal_id),  REML = FALSE)
+
+m5 <- update(m, . ~ habitat_type * day_night +
+               (1 | animal_id),  REML = FALSE)
+
+m6 <- update(m, . ~ habitat_type * day_night +
+               (1 | animal_id),  REML = FALSE)
 
 
 
-res <- simulateResiduals(m)
-plot(res)
-
-par(mfrow = c(1,2))
-plotResiduals(res, interaction(lmb$habitat_type, lmb$season))
-plotResiduals(res, lmb$season)
-plotResiduals(res, lmb$habitat_type)
-
-hist(residuals(m))
 
 
 
-hist(residuals(m))
 
-res_m1 <- simulateResiduals(m1)
-plot(res_m1)
-res_m2 <- simulateResiduals(m2)
-plot(res_m2)
 
 
 
