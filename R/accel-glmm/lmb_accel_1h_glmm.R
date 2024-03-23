@@ -30,16 +30,27 @@ lmb <- dat %>%
   mutate(
     season = factor(season,
                     levels = c("Fall", "Winter", "Spring", "Summer")
-    )
-  )
+    ),
+    habitat_type = factor(habitat_type)
+  ) %>%
+  filter(habitat_type != is.na(habitat_type) &
+           season != is.na(season))
+hist(lmb$mean_accel)
 
+lognor <- fitdist(lmb$mean_accel, distr = "lnorm", method = "mme")
+
+plot(lognor)
+gammas <- fitdist(lmb$mean_accel, distr = "gamma", method = "mme")
+
+plot(gammas)
 
 # ---- start our models for LMB ----
 glimpse(lmb)
-m <- glmmTMB(mean_accel ~ habitat_type * season + (1 | animal_id),
-             # ar1(season + 0 | animal_id),
+m <- glmmTMB(mean_accel ~ habitat_type * season + (1 | animal_id) +
+             ar1(season + 0 | animal_id) +
+             ar1(habitat_type + 0 | animal_id) ,
              data = lmb,
-             family = Gamma(link = "log")
+             family = lognormal(link = "log")
 )
 m1 <- update(m, . ~ habitat_type + (1 | animal_id),  REML = FALSE)
 
@@ -50,6 +61,17 @@ m2 <- update(m, . ~ season + (1 | animal_id),  REML = FALSE)
 
 res <- simulateResiduals(m)
 plot(res)
+
+par(mfrow = c(1,2))
+plotResiduals(res, interaction(lmb$habitat_type, lmb$season))
+plotResiduals(res, lmb$season)
+plotResiduals(res, lmb$habitat_type)
+
+hist(residuals(m))
+
+
+
+hist(residuals(m))
 
 res_m1 <- simulateResiduals(m1)
 plot(res_m1)
@@ -88,10 +110,10 @@ glance_summary <- map_df(glance_list, ~as.data.frame(.x), .id = "id") %>%
 
 # view model selection ------
 glance_summary
-# glance_summary %>%
-#   openxlsx::write.xlsx(here::here("results",
-#                                   "accel-glmm-results",
-#                                   "glmm_model_selection_hab_season_lmb.xlsx"))
+glance_summary %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "glmm_model_selection_hab_season_lmb.xlsx"))
 
 # create specific stuff for model saving -----
 car::Anova(m)
@@ -121,9 +143,7 @@ ind_effects <- tidy(m)
 # multiple comparissions ----
 
 multi_comp <- emmeans(m, ~ habitat_type * season,
-                      adjust = "Tukey", type = "response",
-                      pbkrtest.limit = 3353,
-                      lmerTest.limit = 3353)
+                      adjust = "bonferroni", type = "response")
 # contrast(multi_comp, method = "pairwise", adjust = "bonferroni")
 
 
