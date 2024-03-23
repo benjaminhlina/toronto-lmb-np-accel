@@ -66,3 +66,27 @@ movement_summary_hab <- dat %>%
 openxlsx::write.xlsx(movement_summary_hab, here("results",
                                             "summary-means",
                                             "mean_accel_habitat.xlsx"))
+
+movement_summary_dp <- dat %>%
+  group_by(common_name_e, day_night) %>%
+  summarise(
+    accel = round(mean(mean_accel), digits = 2),
+    sem = round(sd(mean_accel) / sqrt(n()), digits = 3)
+  ) %>%
+  ungroup()
+
+openxlsx::write.xlsx(movement_summary_dp, here("results",
+                                            "summary-means",
+                                            "mean_accel_diel_period.xlsx"))
+
+movement_summary_dp_hab <- dat %>%
+  group_by(common_name_e, day_night, habitat_type) %>%
+  summarise(
+    accel = round(mean(mean_accel), digits = 2),
+    sem = round(sd(mean_accel) / sqrt(n()), digits = 3)
+  ) %>%
+  ungroup()
+
+openxlsx::write.xlsx(movement_summary_dp_hab, here("results",
+                                            "summary-means",
+                                            "mean_accel_diel_period_hab.xlsx"))
