@@ -279,22 +279,22 @@ hab_season_contrast
 #                                   "np",
 #                                   "glmm_multi_comp_hab_within_season_np.xlsx"))
 
-hab_season_contrast %>%
-  filter(season_1 == season_2) %>%
-  arrange(season_1, season_2) %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "np",
-                                  "glmm_multi_comp_hab_within_season_np_31-Jan-24.xlsx"))
-hab_season_contrast %>%
-  filter(hab_1 == hab_2) %>%
-  arrange(hab_1, hab_2) %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "np",
-                                  "glmm_multi_comp_hab_within_hab_np_31-Jan-24.xlsx"))
+# hab_season_contrast %>%
+#   filter(season_1 == season_2) %>%
+#   arrange(season_1, season_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "np",
+#                                   "glmm_multi_comp_hab_within_season_np_31-Jan-24.xlsx"))
+# hab_season_contrast %>%
+#   filter(hab_1 == hab_2) %>%
+#   arrange(hab_1, hab_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "np",
+#                                   "glmm_multi_comp_hab_within_hab_np_31-Jan-24.xlsx"))
 # ---- create specific stuff for model saving -----
 car::Anova(m1)
 summary(m1)
@@ -307,18 +307,18 @@ ind_effects_m1 <- tidy(m1)
 
 
 # main_effects %>%
-main_effects_m1 %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat",
-                                  "np",
-                                  "glmm_main_effects_hab_np.xlsx"))
-ind_effects_m1 %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat",
-                                  "np",
-                                  "glmm_ind_effects_hab_np.xlsx"))
+# main_effects_m1 %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat",
+#                                   "np",
+#                                   "glmm_main_effects_hab_np.xlsx"))
+# ind_effects_m1 %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat",
+#                                   "np",
+#                                   "glmm_ind_effects_hab_np.xlsx"))
 
 # multiple comparissions ----
 
