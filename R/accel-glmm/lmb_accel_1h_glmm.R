@@ -161,7 +161,7 @@ main_effects
 
 # multiple comparissions ----
 
-multi_comp <- emmeans(m, ~ habitat_type * season,
+multi_comp <- emmeans(m4, ~ habitat_type * season,
                       adjust = "bonferroni", type = "response")
 # contrast(multi_comp, method = "pairwise", adjust = "bonferroni")
 
@@ -176,7 +176,7 @@ hab_season_contrast <- tidy(contrast_effects) %>%
   janitor::clean_names() %>%
   arrange(adj_p_value, contrast)
 
-
+hab_season_contrast
 hab_season_contrast <- hab_season_contrast %>%
   separate(contrast, into = c("con_1", "con_2"), sep = " / ") %>%
   mutate(
@@ -192,10 +192,13 @@ hab_season_contrast <- hab_season_contrast %>%
     hab_2 = paste(hab_2, veg_2, sep = " ")
   ) %>%
   dplyr::select(-c("veg_1", "veg_2")) %>%
-  arrange(season_1, season_2)
+  arrange(season_1, season_2) %>%
+  mutate(
+    adj_p_value = round(adj_p_value, digits = 3)
+  )
 
 
-hab_season_contrast
+# hab_season_contrast
 # hab_season_contrast %>%
 #   arrange(hab_1, hab_2) %>%
 #   openxlsx::write.xlsx(here::here("results",
@@ -203,23 +206,23 @@ hab_season_contrast
 #                                   "habitat-season",
 #                                   "lmb",
 #                                   "glmm_multi_comp_hab_season_LMB.xlsx"))
-hab_season_contrast %>%
-  filter(season_1 == season_2) %>%
-  arrange(hab_1, hab_2) %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "lmb",
-                                  "glmm_multi_comp_hab_within_season_LMB.xlsx"))
-hab_season_contrast %>%
-  filter(hab_1 == hab_2) %>%
-  arrange(hab_1, hab_2) %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "lmb",
-                                  "glmm_multi_comp_hab_within_hab_LMB.xlsx"))
-
+# hab_season_contrast %>%
+#   filter(season_1 == season_2) %>%
+#   arrange(hab_1, hab_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "lmb",
+#                                   "glmm_multi_comp_hab_within_season_LMB.xlsx"))
+# hab_season_contrast %>%
+#   filter(hab_1 == hab_2) %>%
+#   arrange(hab_1, hab_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "lmb",
+#                                   "glmm_multi_comp_hab_within_hab_LMB.xlsx"))
+#
 
 
 # ----- create specific stuff for model saving -----
@@ -250,7 +253,7 @@ ind_effects_m1 %>%
 # multiple comparissions ----
 
 multi_comp_m1 <- emmeans(m1, ~ habitat_type,
-                         adjust = "Tukey", type = "response")
+                         adjust = "bonferroni", type = "response")
 # contrast(multi_comp, method = "pairwise", adjust = "bonferroni")
 
 
