@@ -67,6 +67,8 @@ m5 <- update(m, . ~ habitat_type * day_night +
 m6 <- update(m, . ~ habitat_type * day_night +
                (1 | animal_id),  REML = FALSE)
 
+m7 <- update(m, . ~ season * day_night +
+               (1 | animal_id),  REML = FALSE)
 
 
 
@@ -77,11 +79,13 @@ m6 <- update(m, . ~ habitat_type * day_night +
 
 
 # create model list for model selection ------
-model_list <- list(m, m1, m2
+model_list <- list(m, m1, m2, m3, m4, m5, m6, m7
 )
 # give the elements useful names
 names(model_list) <- c("m",
-                       "m1", "m2"
+                       "m1", "m2",
+                       "m3", "m4", "m5",
+                       "m6", "m7"
 )
 glance(m)
 
