@@ -111,6 +111,25 @@ glance_summary %>%
                                   "accel-glmm-results",
                                   "glmm_model_selection_hab_season_lmb.xlsx"))
 
+# check model ----
+res <- simulateResiduals(m)
+plot(res)
+
+par(mfrow = c(1,2))
+plotResiduals(res, interaction(lmb$habitat_type, lmb$season))
+plotResiduals(res, lmb$season)
+plotResiduals(res, lmb$habitat_type)
+
+hist(residuals(m))
+
+
+
+hist(residuals(m))
+
+res_m1 <- simulateResiduals(m1)
+plot(res_m1)
+res_m2 <- simulateResiduals(m2)
+plot(res_m2)
 # create specific stuff for model saving -----
 car::Anova(m)
 summary(m)
