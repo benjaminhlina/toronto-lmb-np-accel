@@ -6,6 +6,7 @@
   library(lubridate)
   library(qs)
   library(readr)
+  library(suncalc)
 }
 
 # ---- bring in cleaned data ----
@@ -38,6 +39,31 @@ dat_accel <- dat_accel[, c("time_bin_1h", "time_bin_2h") := list(
 ]
 
 glimpse(dat_accel)
+# ---- add sunset and dawn dusk times ----
+sl <- getSunlightTimes(date = as.Date(unique(dat_accel$date)),
+                       lat = mean(unique(dat_accel$deploy_lat)),
+                       lon = mean(unique(dat_accel$deploy_long)),
+                       keep = c("dawn", "dusk", "sunrise", "sunset"),
+                       tz = "EST"
+) %>%
+  dplyr::select(-c(lat, lon))
+
+
+dat_accel <- dat_accel %>%
+  left_join(sl, by = "date")
+
+glimpse(dat_accel)
+
+dat_accel <- dat_accel %>%
+  mutate(
+    day_night = case_when(
+      dplyr::between(detection_timestamp_est, dawn, sunrise)   ~ "Dawn",
+      dplyr::between(detection_timestamp_est, sunrise, sunset)   ~ "Day",
+      dplyr::between(detection_timestamp_est, sunset, dusk)   ~ "Dusk",
+      .default = "Night",
+    )
+  )
+
 # ---- create summarized dataframe based on 1 and 2 -----
 accel_sum_1h <- dat_accel[, .(
   n = (.N), # number of dets heard per day
@@ -48,6 +74,7 @@ accel_sum_1h <- dat_accel[, .(
 ),
 keyby =
   .(common_name_e, animal_id, sex, length, weight, time_bin_1h,
+    day_night,
     doy, day, week, month, month_abb, season, year, habitat_type, cluster)
 
 ]
@@ -64,6 +91,7 @@ accel_sum_2h <- dat_accel[, .(
 ),
 keyby =
   .(common_name_e, animal_id, sex, length, weight, time_bin_2h,
+    day_night,
     doy, day, week, month, month_abb, season, year, habitat_type, cluster)
 
 ]
