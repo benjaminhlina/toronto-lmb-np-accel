@@ -1,9 +1,9 @@
 common_name_e,season,Deep/Low SAV,Exposed/Low SAV,Mod/Dense SAV,Shallow/Dense SAV,Shallow/Low SAV
-Largemouth Bass,Fall,ab,a,a,ab,ac
-Largemouth Bass,Winter,d,,,e,de
-Largemouth Bass,Spring,f,f,f,f,f
-Largemouth Bass,Summer,gh,g,g,g,gi
-Northern Pike,Fall,a,ab,b,ab,a
-Northern Pike,Winter,c,d,c,e,c
-Northern Pike,Spring,f,g,f,h,gi
-Northern Pike,Summer,j,k,l,m,j
+Largemouth Bass,Fall,ac,ab,b,c,c
+Largemouth Bass,Winter,d,,,d,d
+Largemouth Bass,Spring,e,e,e,e,e
+Largemouth Bass,Summer,fg,fg,f,fg,g
+Northern Pike,Fall,a,b,a,b,a
+Northern Pike,Winter,c,d,c,c,c
+Northern Pike,Spring,e,ef,e,ef,f
+Northern Pike,Summer,g,g,g,g,g
