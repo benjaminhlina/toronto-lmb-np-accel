@@ -120,7 +120,7 @@ res <- simulateResiduals(m4)
 plot(res)
 
 par(mfrow = c(1,2))
-plotResiduals(res, interaction(lmb$habitat_type, lmb$season))
+# plotResiduals(res, interaction(lmb$habitat_type, lmb$season))
 plotResiduals(res, lmb$season)
 plotResiduals(res, lmb$habitat_type)
 
