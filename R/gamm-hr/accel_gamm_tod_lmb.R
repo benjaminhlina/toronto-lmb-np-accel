@@ -43,7 +43,7 @@ lmb <- dat %>%
   filter(common_name_e %in% "Largemouth Bass" &
            habitat_type != is.na(habitat_type)) %>%
   mutate(
-    season = as.factor(season,
+    season = factor(season,
                        levels = c("Fall", "Winter",
                                   "Spring", "Summer")),
     animal_id = as.factor(animal_id),
@@ -94,6 +94,11 @@ fit_gamma <- fitdist(data = ac, distr = "gamma", method = "mme")
 
 plot(fit_gamma)
 
+glimpse(lmb_1)
+ggplot(data = lmb, aes(x = tod, y = mean_accel)) +
+  geom_jitter(aes(colour = season))
+
+
 # ---- model ----
 m <- bam(mean_accel ~ season * habitat_type +
            s(tod,
@@ -122,7 +127,7 @@ m1 <- update(m,
              rho = r1,
              AR.start = start_event)
 
-
+ac
 draw(m1)
 appraise(m1)
 acf_resid(m1)
