@@ -97,25 +97,25 @@ m7 <- update(m, . ~ habitat_type * day_night +
 
 
 
-res <- simulateResiduals(m)
-plot(res)
-# resid
-
-par(mfrow = c(1,2))
-plotResiduals(res, interaction(np$habitat_type, np$season))
-plotResiduals(res, np$season)
-
-hist(res)
-
-hist(residuals(m))
-
-
-
-res_m1 <- simulateResiduals(m1)
-plot(res_m1)
-res_m2 <- simulateResiduals(m2)
-plot(res_m2)
-summary(m)
+# res <- simulateResiduals(m)
+# plot(res)
+# # resid
+#
+# par(mfrow = c(1,2))
+# plotResiduals(res, interaction(np$habitat_type, np$season))
+# plotResiduals(res, np$season)
+#
+# hist(res)
+#
+# hist(residuals(m))
+#
+#
+#
+# res_m1 <- simulateResiduals(m1)
+# plot(res_m1)
+# res_m2 <- simulateResiduals(m2)
+# plot(res_m2)
+# summary(m)
 
 # create model list for model selection ------
 model_list <- list(m, m1, m2, m3, m5, m6, m7
