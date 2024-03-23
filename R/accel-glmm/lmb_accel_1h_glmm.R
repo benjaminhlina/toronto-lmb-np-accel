@@ -285,3 +285,154 @@ hab_season_contrast_m1 %>%
 
 
 
+# ---- diel period -----
+res <- simulateResiduals(m3)
+plot(res)
+hist(res)
+
+
+
+main_effects_m3 <- tidy(car::Anova(m3))
+
+ind_effects_m3 <- tidy(m3)
+
+main_effects_m3 %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period",
+                                  "lmb",
+                                  "glmm_main_effects_dp_lmb.xlsx"))
+ind_effects_m3 %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period",
+                                  "lmb",
+                                  "glmm_ind_effects_db_hab_lmb.xlsx"))
+
+
+
+# multicomparisons
+
+multi_comp_m3 <- emmeans(m3, ~ day_night,
+                         adjust = "bonferroni", type = "response")
+
+
+contrast_effects_m3 <- contrast(multi_comp_m3, method = "pairwise",
+                                adjust = "bonferroni")
+
+hab_season_contrast_m3 <- tidy(contrast_effects_m3) %>%
+  janitor::clean_names() %>%
+  arrange(adj_p_value, contrast)
+
+
+
+
+hab_season_contrast_m3 %>%
+  arrange(
+    # contrast,
+    adj_p_value) %>%
+
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period",
+                                  "lmb",
+                                  "glmm_multi_comp_dp_LMB.xlsx"))
+
+
+# ---- diel period and habitat ----
+
+res <- simulateResiduals(m6)
+plot(res)
+hist(res)
+
+
+main_effects_m6 <- tidy(car::Anova(m6))
+
+ind_effects_m6 <- tidy(m6)
+
+main_effects_m6 %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period-habitat",
+                                  "lmb",
+                                  "glmm_main_effects_dp_hab_lmb.xlsx"))
+ind_effects_m6 %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period-habitat",
+                                  "lmb",
+                                  "glmm_ind_effects_db_hab_lmb.xlsx"))
+
+
+
+# ---- multicomparisons -----
+
+multi_comp_m6 <- emmeans(m6, ~ day_night * habitat_type,
+                         adjust = "bonferroni", type = "response")
+
+
+contrast_effects_m6 <- contrast(multi_comp_m6, method = "pairwise",
+                                adjust = "bonferroni")
+
+
+day_night_contrast_m6 <- tidy(contrast_effects_m6) %>%
+  janitor::clean_names() %>%
+  arrange(adj_p_value, contrast)
+day_night_contrast_m6
+
+
+day_night_season_contrast <- day_night_contrast_m6 %>%
+  separate(contrast, into = c("con_1", "con_2"), sep = " / ") %>%
+  mutate(
+    con_1 = str_remove(string = con_1, pattern = "\\("),
+    con_1 = str_remove(string = con_1, pattern = "\\)"),
+    con_2 = str_remove(string = con_2, pattern = "\\("),
+    con_2 = str_remove(string = con_2, pattern = "\\)"),
+  ) %>%
+  separate_wider_delim(con_1, names = c("dp_1", "veg_1", "sav_1"),
+                              delim = " ") %>%
+  separate_wider_delim(con_2, names = c("dp_2", "veg_2", "sav_2"),
+                              delim = " ") %>%
+  mutate(
+    veg_1 = paste(veg_1, sav_1, sep = " "),
+    veg_2 = paste(veg_2, sav_2, sep = " ")
+  ) %>%
+  dplyr::select(-c("sav_1", "sav_2")) %>%
+  arrange(dp_1, dp_2)
+day_night_season_contrast
+
+
+
+day_night_season_contrast %>%
+  arrange(veg_1, veg_2) %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period-habitat",
+                                  "lmb",
+                                  "glmm_multi_comp_hab_season_lmb.xlsx"))
+day_night_season_contrast %>%
+  filter(dp_1 == dp_2) %>%
+  arrange(veg_1, veg_2) %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period-habitat",
+                                  "lmb",
+                                  "glmm_multi_comp_hab_within_dp_lmb.xlsx"))
+
+# hab_season_contrast %>%
+#   filter(season_1 == season_2) %>%
+#   arrange(season_1, season_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "np",
+#                                   "glmm_multi_comp_hab_within_season_np_31-Jan-24.xlsx"))
+day_night_season_contrast %>%
+  filter(veg_1 == veg_2) %>%
+  arrange(veg_1, veg_2) %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "diel-period-habitat",
+                                  "lmb",
+                                  "glmm_multi_comp_hab_within_hab_lmb.xlsx"))
+# ---- create specifi
