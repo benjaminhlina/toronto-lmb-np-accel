@@ -134,6 +134,30 @@ res_m1 <- simulateResiduals(m1)
 plot(res_m1)
 res_m2 <- simulateResiduals(m2)
 plot(res_m2)
+
+
+# ---- Model main effects ----
+
+main_effects <- tidy(car::Anova(m))
+
+main_effects
+
+ind_effects <- tidy(m)
+
+ind_effects
+
+# ---- save output ----
+main_effects %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat-season-diel-period",
+                                  "glmm_main_effects_hab_season_dp_lmb.xlsx"))
+ind_effects %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat-season-diel-period",
+                                  "glmm_ind_effects_hab_season_dp_lmb.xlsx"))
+
 # create specific stuff for model saving -----
 car::Anova(m4)
 summary(m4)
@@ -163,7 +187,6 @@ main_effects
 
 multi_comp <- emmeans(m4, ~ habitat_type * season,
                       adjust = "bonferroni", type = "response")
-# contrast(multi_comp, method = "pairwise", adjust = "bonferroni")
 
 
 
@@ -198,31 +221,31 @@ hab_season_contrast <- hab_season_contrast %>%
   )
 
 
-# hab_season_contrast
-# hab_season_contrast %>%
-#   arrange(hab_1, hab_2) %>%
-#   openxlsx::write.xlsx(here::here("results",
-#                                   "accel-glmm-results",
-#                                   "habitat-season",
-#                                   "lmb",
-#                                   "glmm_multi_comp_hab_season_LMB.xlsx"))
-# hab_season_contrast %>%
-#   filter(season_1 == season_2) %>%
-#   arrange(hab_1, hab_2) %>%
-#   openxlsx::write.xlsx(here::here("results",
-#                                   "accel-glmm-results",
-#                                   "habitat-season",
-#                                   "lmb",
-#                                   "glmm_multi_comp_hab_within_season_LMB.xlsx"))
-# hab_season_contrast %>%
-#   filter(hab_1 == hab_2) %>%
-#   arrange(hab_1, hab_2) %>%
-#   openxlsx::write.xlsx(here::here("results",
-#                                   "accel-glmm-results",
-#                                   "habitat-season",
-#                                   "lmb",
-#                                   "glmm_multi_comp_hab_within_hab_LMB.xlsx"))
-#
+# ---- habat contransts ----
+hab_season_contrast %>%
+  arrange(hab_1, hab_2) %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat-season",
+                                  "lmb",
+                                  "glmm_multi_comp_hab_season_LMB.xlsx"))
+hab_season_contrast %>%
+  filter(season_1 == season_2) %>%
+  arrange(hab_1, hab_2) %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat-season",
+                                  "lmb",
+                                  "glmm_multi_comp_hab_within_season_LMB.xlsx"))
+hab_season_contrast %>%
+  filter(hab_1 == hab_2) %>%
+  arrange(hab_1, hab_2) %>%
+  openxlsx::write.xlsx(here::here("results",
+                                  "accel-glmm-results",
+                                  "habitat-season",
+                                  "lmb",
+                                  "glmm_multi_comp_hab_within_hab_LMB.xlsx"))
+
 
 
 # ----- create specific stuff for model saving -----
@@ -272,11 +295,8 @@ hab_season_contrast_m1 <- tidy(contrast_effects_m1) %>%
 
 
 hab_season_contrast_m1 %>%
-  # filter(adj_p_value < 0.05) %>%
   arrange(
-    # contrast,
     adj_p_value) %>%
-
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
                                   "habitat",
@@ -293,6 +313,7 @@ hist(res)
 
 
 main_effects_m3 <- tidy(car::Anova(m3))
+main_effects_m3
 
 ind_effects_m3 <- tidy(m3)
 
@@ -348,6 +369,7 @@ hist(res)
 
 main_effects_m6 <- tidy(car::Anova(m6))
 
+main_effects_m6
 ind_effects_m6 <- tidy(m6)
 
 main_effects_m6 %>%
@@ -435,4 +457,20 @@ day_night_season_contrast %>%
                                   "diel-period-habitat",
                                   "lmb",
                                   "glmm_multi_comp_hab_within_hab_lmb.xlsx"))
-# ---- create specifi
+# ---- seasons -----
+
+car::Anova(m2)
+
+
+multi_comp_m2 <- emmeans(m2, ~  season,
+                         adjust = "bonferroni", type = "response")
+
+
+contrast_effects_m2 <- contrast(multi_comp_m2, method = "pairwise",
+                                adjust = "bonferroni")
+
+contrast_m2 <- tidy(contrast_effects_m2) %>%
+  janitor::clean_names() %>%
+  arrange(adj_p_value, contrast)
+contrast_m2
+
