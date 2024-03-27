@@ -1,0 +1,9 @@
+common_name_e,dp,Deep/Low SAV,Exposed/Low SAV,Mod/Dense SAV,Shallow/Dense SAV,Shallow/Low SAV
+Largemouth Bass,Dawn,a,a,a,ab,ac
+Largemouth Bass,Day ,d,e,e,df,f
+Largemouth Bass,Dusk,g,g,g,g,g
+Largemouth Bass,Night,h,i,i,j,h
+Northern Pike,Dawn,a,b,a,a,b
+Northern Pike,Day ,cd,e,cf,d,f
+Northern Pike,Dusk,g,h,h,g,g
+Northern Pike,Night,i,j,i,i,j
