@@ -127,6 +127,9 @@ glance_summary %>%
                                   "glmm_model_selection_hab_season_np.xlsx"))
 
 
+
+
+
 # ---- check collinearity, auto co -----
 plot(check_collinearity(m))
 check_autocorrelation(m)
@@ -146,7 +149,11 @@ hist(res)
 hist(residuals(m))
 
 
+# ---- extract main model effects -----
 
+
+
+# ---- simulated resideuals ----
 res_m1 <- simulateResiduals(m1)
 plot(res_m1)
 res_m2 <- simulateResiduals(m2)
