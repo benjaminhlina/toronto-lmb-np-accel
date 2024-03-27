@@ -84,6 +84,19 @@ among_season_long
 among_season_long$common_name_e
 unique(dat$common_name_e)
 
+
+
+among_seasons_b <- readr::read_csv(here("Results",
+                                        "comparison-letters-final",
+                                        "among_seasons_compare_lmb_np.csv"))
+
+
+among_season_b <- among_seasons_b %>%
+  pivot_longer(cols = -c(common_name_e),
+               names_to = "seasons"
+  )
+
+
 # ---- letter prep ----
 sig_let_hab <-  tibble(
   common_name_e = among_hab_long$common_name_e,
@@ -91,11 +104,40 @@ sig_let_hab <-  tibble(
   x = rep(seq(1, 5, 1), 2),
   y =
     c(
-    1.17, 1.30, 1.72, 1.05, 1.29,
-    0.37, 0.54, 0.42, 0.48, 0.42
+      1.21, 1.30, 1.72, 1.05, 1.33,
+      0.37, 0.54, 0.42, 0.48, 0.42
 
-  )
+    )
 )
+
+glimpse(dat)
+# mod/dense sav and exposed/low sav
+#
+# mising <- tibble(
+#   common_name_e = rep("Largemouth Bass", 2),
+#   season = rep("Winter", 2),
+#   habitat_type = c("Mod/Dense SAV", "Exposed/Low SAV"),
+#   mean_accel = NA
+#
+# )
+#
+# mising
+# dat <- bind_rows(dat, mising) %>%
+#   mutate(
+#
+#     season = factor(season,
+#                     levels = c("Fall", "Winter", "Spring", "Summer"),
+#     ),
+#     habitat_type = factor(
+#       habitat_type, levels =
+#         c("Deep/Low SAV", "Exposed/Low SAV",
+#           "Mod/Dense SAV",
+#           "Shallow/Dense SAV",
+#           "Shallow/Low SAV"
+#         )
+#     )
+#   )
+
 
 
 # ----- create boxplots ----
@@ -118,6 +160,8 @@ p5 <- ggplot(data = dat,
   labs(x = "Habitat Type",
        y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
   )
+
+
 
 
 
@@ -149,7 +193,7 @@ max_ac <- dat %>%
   ungroup() %>%
   arrange(common_name_e, season, habitat_type) %>%
   filter(!(common_name_e %in% "Largemouth Bass" &
-           season %in% "Winter" &
+             season %in% "Winter" &
              habitat_type %in% c("Exposed/Low SAV",
                                  "Mod/Dense SAV")))
 
@@ -193,19 +237,22 @@ dput(unique(dat$habitat_type))
 #   group_split(season, habitat_type) %>%
 #   map(~ boxplot.stats(.x$mean_accel)$stats[c(1, 5)])
 
+glimpse(dat)
 p12 <- ggplot() +
   geom_boxplot(data = dat,
                aes(x = season, y = mean_accel,
-                   fill = habitat_type), outlier.shape = NA) +
-
-
+                   fill = habitat_type),na.rm = FALSE, outlier.shape = NA) +
+  facet_wrap(. ~ common_name_e) +
   # geom_text(data = sig_stars, aes(x = x,
   #                                 y = y + 0.05,
   #                                 label = stars),
   #           size = 5) +
-  lemon::facet_rep_wrap(. ~ common_name_e, repeat.tick.labels = TRUE) +
+  # scale_fill_manual(drop = FALSE) +
+  # lemon::facet_rep_wrap(. ~ common_name_e, repeat.tick.labels = TRUE,
+  #                       drop = FALSE) +
   scale_fill_viridis_d(end = 0.85, name = "Habitat Type",
-                       alpha = 0.5) +
+                       alpha = 0.5, drop = FALSE) +
+  scale_x_discrete(drop = FALSE) +
   theme_bw(
     base_size = 15
   ) +
@@ -221,7 +268,7 @@ p12 <- ggplot() +
        y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
   )
 
-
+p12
 ggstat <- ggplot_build(p12)$data
 
 sig_let <- tibble(
@@ -238,7 +285,7 @@ sig_let <- tibble(
     3.7, 3.85, 4, 4.15, 4.3
   ),
   y = ggstat[[1]]$ymax
-    # max_ac$whisk_high
+  # max_ac$whisk_high
   #   c(
   #   0.75, 0.93, 1.1, 0.85, 1.05,
   #   0.63, 0.4, 0.45,
@@ -257,6 +304,63 @@ p12 <- p12 +
                                 label = letter),
             size = 5)
 p12
+
+
+# ---- seasons -----
+# ---- letter prep ----
+sig_let_ses <-  tibble(
+  common_name_e = among_season_b$common_name_e,
+  letter = among_season_b$value,
+  x = rep(seq(1, 4, 1), 2),
+  y =
+    c(
+      1.21, 1.30, 1.72, 1.05,
+      0.42, 0.36, 0.51, 0.53
+
+    )
+)
+
+p6 <- ggplot(data = dat,
+             aes(x = season, y = mean_accel)) +
+  geom_boxplot(width = 0.25, outlier.shape = NA) +
+  geom_text(data = sig_let_ses, aes(x = x,
+                                    y = y,
+                                    label = letter),
+            size = 5) +
+  lemon::facet_rep_wrap(. ~ common_name_e, repeat.tick.labels = TRUE) +
+  theme_bw(
+    base_size = 15
+  ) +
+  theme(
+    panel.grid = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_blank(),
+    # axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  labs(x = "Season",
+       y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
+  )
+
+
+p6
+
+
+
+
+
+
+
+
+
+
+
+
+14/11
+
+
+
+
+
 # p12$data
 # glimpse(p12)
 # p12
@@ -265,9 +369,14 @@ p13 <- (p5 +
           coord_cartesian(ylim = c(0, 2)) +
           theme(
             # axis.text.x = element_blank(),
-            axis.title.x = element_blank()
-          )) / (p12 +  coord_cartesian(ylim = c(0, 2))) +
+            # axis.title.x = element_blank()
+          )) /
+  (p6 +
+     coord_cartesian(ylim = c(0, 2))) /
+  (p12 +  coord_cartesian(ylim = c(0, 2))) +
   plot_annotation(tag_levels = "a", tag_suffix = ")")
+
+
 
 # p13
 ggsave(filename = here("plots",
@@ -275,11 +384,11 @@ ggsave(filename = here("plots",
                        "Publication Plots",
                        paste("hab_season_spp_boxplot_labelled_no_outlier_",
                              Sys.Date(), ".png", sep = "")),
-       width = 14, height = 11, plot = p13)
+       width = 14, height = 11 * 1.5, plot = p13)
 ggsave(filename = here("plots",
                        "boxplot",
                        "Publication Plots",
                        paste("hab_season_spp_boxplot_labelled_no_outlier_",
                              Sys.Date(), ".pdf", sep = "")),
-       width = 14, height = 11, plot = p13)
+       width = 14, height = 11 * 1.5, plot = p13)
 
