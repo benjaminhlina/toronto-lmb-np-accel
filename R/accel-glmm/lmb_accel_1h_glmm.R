@@ -110,10 +110,10 @@ glance_summary <- map_df(glance_list, ~as.data.frame(.x), .id = "id") %>%
 
 # view model selection ------
 glance_summary
-glance_summary %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "glmm_model_selection_hab_season_lmb.xlsx"))
+# glance_summary %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "glmm_model_selection_hab_season_lmb.xlsx"))
 
 # check model ----
 res <- simulateResiduals(m4)
@@ -147,16 +147,16 @@ ind_effects <- tidy(m)
 ind_effects
 
 # ---- save output ----
-main_effects %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season-diel-period",
-                                  "glmm_main_effects_hab_season_dp_lmb.xlsx"))
-ind_effects %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season-diel-period",
-                                  "glmm_ind_effects_hab_season_dp_lmb.xlsx"))
+# main_effects %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season-diel-period",
+#                                   "glmm_main_effects_hab_season_dp_lmb.xlsx"))
+# ind_effects %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season-diel-period",
+#                                   "glmm_ind_effects_hab_season_dp_lmb.xlsx"))
 
 # create specific stuff for model saving -----
 car::Anova(m4)
@@ -222,29 +222,29 @@ hab_season_contrast <- hab_season_contrast %>%
 
 
 # ---- habat contransts ----
-hab_season_contrast %>%
-  arrange(hab_1, hab_2) %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "lmb",
-                                  "glmm_multi_comp_hab_season_LMB.xlsx"))
-hab_season_contrast %>%
-  filter(season_1 == season_2) %>%
-  arrange(hab_1, hab_2) %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "lmb",
-                                  "glmm_multi_comp_hab_within_season_LMB.xlsx"))
-hab_season_contrast %>%
-  filter(hab_1 == hab_2) %>%
-  arrange(hab_1, hab_2) %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat-season",
-                                  "lmb",
-                                  "glmm_multi_comp_hab_within_hab_LMB.xlsx"))
+# hab_season_contrast %>%
+#   arrange(hab_1, hab_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "lmb",
+#                                   "glmm_multi_comp_hab_season_LMB.xlsx"))
+# hab_season_contrast %>%
+#   filter(season_1 == season_2) %>%
+#   arrange(hab_1, hab_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "lmb",
+#                                   "glmm_multi_comp_hab_within_season_LMB.xlsx"))
+# hab_season_contrast %>%
+#   filter(hab_1 == hab_2) %>%
+#   arrange(hab_1, hab_2) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat-season",
+#                                   "lmb",
+#                                   "glmm_multi_comp_hab_within_hab_LMB.xlsx"))
 
 
 
@@ -260,18 +260,18 @@ ind_effects_m1 <- tidy(m1)
 
 
 # main_effects %>%
-main_effects_m1 %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat",
-                                  "lmb",
-                                  "glmm_main_effects_hab_lmb.xlsx"))
-ind_effects_m1 %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat",
-                                  "lmb",
-                                  "glmm_ind_effects_hab_season_lmb.xlsx"))
+# main_effects_m1 %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat",
+#                                   "lmb",
+#                                   "glmm_main_effects_hab_lmb.xlsx"))
+# ind_effects_m1 %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat",
+#                                   "lmb",
+#                                   "glmm_ind_effects_hab_season_lmb.xlsx"))
 
 # multiple comparissions ----
 
@@ -294,14 +294,14 @@ hab_season_contrast_m1 <- tidy(contrast_effects_m1) %>%
 
 
 
-hab_season_contrast_m1 %>%
-  arrange(
-    adj_p_value) %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "habitat",
-                                  "lmb",
-                                  "glmm_multi_comp_hab_LMB.xlsx"))
+# hab_season_contrast_m1 %>%
+#   arrange(
+#     adj_p_value) %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "habitat",
+#                                   "lmb",
+#                                   "glmm_multi_comp_hab_LMB.xlsx"))
 
 
 
@@ -317,18 +317,18 @@ main_effects_m3
 
 ind_effects_m3 <- tidy(m3)
 
-main_effects_m3 %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "diel-period",
-                                  "lmb",
-                                  "glmm_main_effects_dp_lmb.xlsx"))
-ind_effects_m3 %>%
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "diel-period",
-                                  "lmb",
-                                  "glmm_ind_effects_db_hab_lmb.xlsx"))
+# main_effects_m3 %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "diel-period",
+#                                   "lmb",
+#                                   "glmm_main_effects_dp_lmb.xlsx"))
+# ind_effects_m3 %>%
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "diel-period",
+#                                   "lmb",
+#                                   "glmm_ind_effects_db_hab_lmb.xlsx"))
 
 
 
@@ -348,16 +348,16 @@ hab_season_contrast_m3 <- tidy(contrast_effects_m3) %>%
 
 
 
-hab_season_contrast_m3 %>%
-  arrange(
-    # contrast,
-    adj_p_value) %>%
-
-  openxlsx::write.xlsx(here::here("results",
-                                  "accel-glmm-results",
-                                  "diel-period",
-                                  "lmb",
-                                  "glmm_multi_comp_dp_LMB.xlsx"))
+# hab_season_contrast_m3 %>%
+#   arrange(
+#     # contrast,
+#     adj_p_value) %>%
+#
+#   openxlsx::write.xlsx(here::here("results",
+#                                   "accel-glmm-results",
+#                                   "diel-period",
+#                                   "lmb",
+#                                   "glmm_multi_comp_dp_LMB.xlsx"))
 
 
 # ---- diel period and habitat ----
