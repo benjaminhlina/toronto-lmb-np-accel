@@ -376,7 +376,7 @@ p13 <- (p5 +
 
 
 
-# p13
+p13
 ggsave(filename = here("plots",
                        "boxplot",
                        "Publication Plots",
