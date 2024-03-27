@@ -188,7 +188,8 @@ ind_effects %>%
 # multiple comparissions ----
 
 multi_comp <- emmeans(m5, ~ habitat_type * season,
-                      adjust = "bonferroni", type = "response")
+                      adjust = "holm",
+                      type = "response")
 # contrast(multi_comp, method = "pairwise", adjust = "bonferroni")
 
 
@@ -196,7 +197,7 @@ multi_comp <- emmeans(m5, ~ habitat_type * season,
 
 
 contrast_effects <- contrast(multi_comp, method = "pairwise",
-                             adjust = "bonferroni")
+                             adjust = "holm")
 
 hab_season_contrast <- tidy(contrast_effects) %>%
   janitor::clean_names() %>%
@@ -220,7 +221,8 @@ hab_season_contrast <- hab_season_contrast %>%
   ) %>%
   dplyr::select(-c("veg_1", "veg_2")) %>%
   arrange(season_1, season_2)
-hab_season_contrast
+hab_season_contrast %>%
+  filter(season_1 == "Winter" & season_2 == "Winter")
 
 
 
