@@ -54,15 +54,33 @@ dat_accel <- dat_accel %>%
 
 glimpse(dat_accel)
 
+
+
+
 dat_accel <- dat_accel %>%
   mutate(
     day_night = case_when(
-      dplyr::between(detection_timestamp_est, dawn, sunrise)   ~ "Dawn",
-      dplyr::between(detection_timestamp_est, sunrise, sunset)   ~ "Day",
-      dplyr::between(detection_timestamp_est, sunset, dusk)   ~ "Dusk",
-      .default = "Night",
+    detection_timestamp_est >= dawn & detection_timestamp_est < sunrise   ~ "Dawn",
+    detection_timestamp_est >= sunrise & detection_timestamp_est < sunset   ~ "Day",
+    detection_timestamp_est >= sunset & detection_timestamp_est <= dusk   ~ "Dusk",
+    .default = "Night"
     )
-  )
+)
+
+unique(dat_accel$day_night)
+# ds <- dat_accel %>%
+#   select(detection_timestamp_est, day_night)
+#
+# ds
+# dat_accel <- dat_accel %>%
+#   mutate(
+#     day_night = case_when(
+#       dplyr::between(detection_timestamp_est, dawn, sunrise)   ~ "Dawn",
+#       dplyr::between(detection_timestamp_est, sunrise, sunset)   ~ "Day",
+#       dplyr::between(detection_timestamp_est, sunset, dusk)   ~ "Dusk",
+#       .default = "Night",
+#     )
+#   )
 
 # ---- create summarized dataframe based on 1 and 2 -----
 accel_sum_1h <- dat_accel[, .(
