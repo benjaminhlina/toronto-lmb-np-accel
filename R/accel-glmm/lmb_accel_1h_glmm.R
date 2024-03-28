@@ -462,7 +462,9 @@ day_night_season_contrast %>%
 # ---- seasons -----
 
 car::Anova(m2)
+main_effec_m2 <- tidy(car::Anova(m2))
 
+main_effec_m2$statistic
 
 multi_comp_m2 <- emmeans(m2, ~  season,
                          adjust = "bonferroni", type = "response")
