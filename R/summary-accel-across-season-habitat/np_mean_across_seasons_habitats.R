@@ -29,15 +29,17 @@ glimpse(dat)
 # look at data structure
 
 
-np <- dat %>%
-  filter(common_name_e == "Northern Pike") %>%
+dat <- dat %>%
+  # filter(common_name_e == "Northern Pike") %>%
   mutate(
     season = factor(season,
                     levels = c("Fall", "Winter", "Spring", "Summer")
     ),
     habitat_type = factor(habitat_type)
 
-  )
+  ) %>%
+  filter(habitat_type != is.na(habitat_type))
+
 
 
 
@@ -90,3 +92,16 @@ movement_summary_dp_hab <- dat %>%
 openxlsx::write.xlsx(movement_summary_dp_hab, here("results",
                                             "summary-means",
                                             "mean_accel_diel_period_hab.xlsx"))
+
+
+movement_summary_seasons <- dat %>%
+  group_by(common_name_e, season) %>%
+  summarise(
+    accel = round(mean(mean_accel), digits = 2),
+    sem = round(sd(mean_accel) / sqrt(n()), digits = 3)
+  ) %>%
+  ungroup()
+
+openxlsx::write.xlsx(movement_summary_seasons, here("results",
+                                            "summary-means",
+                                            "mean_accel_sesaons.xlsx"))
