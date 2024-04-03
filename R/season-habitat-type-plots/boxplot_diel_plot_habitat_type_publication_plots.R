@@ -39,6 +39,26 @@ dat <- dat %>%
                                              "Dusk", "Night"))
   )
 
+
+
+dat <- dat %>%
+  mutate(
+    habitat_type = factor(case_when(
+      habitat_type == "Deep/Low SAV" ~ "Deep un-vegetated",
+      habitat_type == "Exposed/Low SAV" ~ "Exposed",
+      habitat_type == "Mod/Dense SAV" ~ "Coastal vegetated",
+      habitat_type == "Shallow/Dense SAV" ~ "Wetlands",
+      habitat_type == "Shallow/Low SAV" ~ "Shallow un-vegetated",
+
+    ), level = c(
+      "Deep un-vegetated", "Exposed",  "Coastal vegetated",
+      "Wetlands",
+      "Shallow un-vegetated"
+
+
+    )
+    )
+  )
 # ---- bring in among diel letters ----
 
 dp_letters <- read_csv(here("results",
