@@ -22,6 +22,8 @@ dat <- qread(here("data-saved",
                   "lmb_np_cleaned_accel_th_after_abacus.qs"))
 
 glimpse(dat)
+
+
 # look at data structure
 
 
@@ -83,3 +85,38 @@ days_heard <- dat %>%
 
 days_heard
 summary(days_heard)
+
+
+openxlsx::write.xlsx(days_heard, here("results",
+                                      "summary-detections",
+                                      "days_heard.xlsx"))
+
+
+
+
+
+rec_locs <-  dat %>%
+  group_by(station, name, habitat_type) %>%
+  summarise(
+    num_recs = n_distinct(station)
+  ) %>%
+  ungroup()
+
+print(rec_locs, n = 42)
+openxlsx::write.xlsx(rec_locs, here("results",
+                                      "summary-detections",
+                                      "rec_loc.xlsx"))
+
+rec_locs_lat <-  dat %>%
+  group_by(name, habitat_type) %>%
+  summarise(
+    num_recs = n_distinct(station),
+    mean_lat = mean(deploy_lat),
+    mean_lon = mean(deploy_long)
+  ) %>%
+  ungroup()
+
+
+openxlsx::write.xlsx(rec_locs_lat, here("results",
+                                    "summary-detections",
+                                    "rec_loc_mean_lats_lons.xlsx"))
