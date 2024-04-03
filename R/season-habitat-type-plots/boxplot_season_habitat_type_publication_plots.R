@@ -111,6 +111,25 @@ sig_let_hab <-  tibble(
 )
 
 glimpse(dat)
+
+dat <- dat %>%
+  mutate(
+  habitat_type = factor(case_when(
+    habitat_type == "Deep/Low SAV" ~ "Deep un-vegetated",
+    habitat_type == "Exposed/Low SAV" ~ "Exposed",
+    habitat_type == "Mod/Dense SAV" ~ "Coastal vegetated",
+    habitat_type == "Shallow/Dense SAV" ~ "Wetlands",
+    habitat_type == "Shallow/Low SAV" ~ "Shallow un-vegetated",
+
+  ), level = c(
+    "Deep un-vegetated", "Exposed",  "Coastal vegetated",
+     "Wetlands",
+    "Shallow un-vegetated"
+
+
+  )
+  )
+)
 # mod/dense sav and exposed/low sav
 #
 # mising <- tibble(
