@@ -511,11 +511,10 @@ day_night_season_contrast
 
 
 
-day_night_season_contrast %>%
-  arrange(veg_1, veg_2) %>%
+contrast_m2 %>%
   openxlsx::write.xlsx(here::here("results",
                                   "accel-glmm-results",
-                                  "diel-period-habitat",
+                                  "season",
                                   "np",
                                   "glmm_multi_comp_hab_season_np.xlsx"))
 
