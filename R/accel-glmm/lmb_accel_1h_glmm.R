@@ -478,3 +478,10 @@ contrast_m2 <- tidy(contrast_effects_m2) %>%
   arrange(adj_p_value, contrast)
 contrast_m2
 
+contrast_m2 %>%
+openxlsx::write.xlsx(here::here("results",
+                                "accel-glmm-results",
+                                "season",
+                                "lmb",
+                                "glmm_multi_comp_hab_within_hab_lmb.xlsx"))
+# ---- seasons -----
