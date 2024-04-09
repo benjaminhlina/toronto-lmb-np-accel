@@ -19,12 +19,13 @@ np <- qread(here("data-saved",
 
 p <- (lmb +
         theme(
-          legend.position = "none"
+          legend.position = "inside",
+          legend.position.inside = c(0.9, 0.87)
         ) +
         labs(x = "")) /
   (np +
      theme(
-       # legend.position = "none"
+       legend.position = "none"
      ) +
      labs(x = "Diel Period")) +
   plot_annotation(tag_levels = "a", tag_suffix = ")")
