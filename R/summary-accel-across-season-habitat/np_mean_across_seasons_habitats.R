@@ -105,3 +105,16 @@ movement_summary_seasons <- dat %>%
 openxlsx::write.xlsx(movement_summary_seasons, here("results",
                                             "summary-means",
                                             "mean_accel_sesaons.xlsx"))
+
+
+movement_summary_dp_hab_seas <- dat %>%
+  group_by(common_name_e, season, day_night, habitat_type) %>%
+  summarise(
+    accel = round(mean(mean_accel), digits = 2),
+    sem = round(sd(mean_accel) / sqrt(n()), digits = 3)
+  ) %>%
+  ungroup()
+
+openxlsx::write.xlsx(movement_summary_dp_hab_seas, here("results",
+                                                   "summary-means",
+                                                   "mean_accel_diel_period_hab_seas.xlsx"))
