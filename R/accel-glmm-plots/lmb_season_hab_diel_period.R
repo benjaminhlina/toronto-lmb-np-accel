@@ -110,10 +110,10 @@ pres
   #   )
   # )
 glimpse(pres)
-pres_1 <- pres %>%
-  filter(x %in% dp_hab_seas$season & group %in% dp_hab_seas$habitat_type &
-          facet %in% dp_hab_seas$day_night)
-#
+# pres_1 <- pres %>%
+#   filter(x %in% dp_hab_seas$season & group %in% dp_hab_seas$habitat_type &
+#           facet %in% dp_hab_seas$day_night)
+# #
 pres <- pres %>%
   filter(!(group %in% c("Exposed", "Coastal vegetated") & x %in% "Winter"))
 
