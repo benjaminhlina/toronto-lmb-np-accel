@@ -35,7 +35,19 @@ lmb <- dat %>%
     season = factor(season,
                     levels = c("Fall", "Winter", "Spring", "Summer")
     ),
-    habitat_type = factor(habitat_type)
+      habitat_type = factor(case_when(
+        habitat_type == "Deep/Low SAV" ~ "Deep un-vegetated",
+        habitat_type == "Exposed/Low SAV" ~ "Exposed",
+        habitat_type == "Mod/Dense SAV" ~ "Coastal vegetated",
+        habitat_type == "Shallow/Dense SAV" ~ "Wetlands",
+        habitat_type == "Shallow/Low SAV" ~ "Shallow un-vegetated",
+
+      ), level = c(
+        "Wetlands", "Coastal vegetated", "Shallow un-vegetated",
+        "Deep un-vegetated", "Exposed"
+      )
+
+    )
   ) %>%
   filter(habitat_type != is.na(habitat_type) &
            season != is.na(season))
@@ -58,39 +70,64 @@ m <- glmmTMB(mean_accel ~ habitat_type * season * day_night +
 )
 
 # ---- prediticed means
+dp_hab_seas <- lmb %>%
+  group_by(season, day_night, habitat_type) %>%
+  summarise(
+    accel = round(mean(mean_accel), digits = 2),
+    sem = round(sd(mean_accel) / sqrt(n()), digits = 3)
+  ) %>%
+  ungroup()
+
+
 pres <- predict_response(m, terms = c("season", "habitat_type", "day_night") )
+
+# predict()
+# test <- broom.mixed::augment(m, se.fit = TRUE)
+#
+#
+# test <- test %>%
+#   mutate(
+#
+#   )
 
 unique(pres$group)
 
-pres <- as_tibble(pres) %>%
-  mutate(
-    habitat_type = factor(case_when(
-      group == "Deep/Low SAV" ~ "Deep un-vegetated",
-      group == "Exposed/Low SAV" ~ "Exposed",
-      group == "Mod/Dense SAV" ~ "Coastal vegetated",
-      group == "Shallow/Dense SAV" ~ "Wetlands",
-      group == "Shallow/Low SAV" ~ "Shallow un-vegetated",
+pres <- as_tibble(pres)
 
-    ), level = c(
-      "Wetlands", "Coastal vegetated", "Shallow un-vegetated",
-      "Deep un-vegetated", "Exposed"
-    )
-    )
-  )
 pres
-
+# mutate(
+  #   habitat_type = factor(case_when(
+  #     group == "Deep/Low SAV" ~ "Deep un-vegetated",
+  #     group == "Exposed/Low SAV" ~ "Exposed",
+  #     group == "Mod/Dense SAV" ~ "Coastal vegetated",
+  #     group == "Shallow/Dense SAV" ~ "Wetlands",
+  #     group == "Shallow/Low SAV" ~ "Shallow un-vegetated",
+  #
+  #   ), level = c(
+  #     "Wetlands", "Coastal vegetated", "Shallow un-vegetated",
+  #     "Deep un-vegetated", "Exposed"
+  #   )
+  #   )
+  # )
+glimpse(pres)
+pres_1 <- pres %>%
+  filter(x %in% dp_hab_seas$season & group %in% dp_hab_seas$habitat_type &
+          facet %in% dp_hab_seas$day_night)
+#
+pres <- pres %>%
+  filter(!(group %in% c("Exposed", "Coastal vegetated") & x %in% "Winter"))
 
 # tp <- test_predictions(m, terms = c("season", "habitat_type", "day_night"))
 
 p <- pres %>%
   ggplot() +
-  geom_linerange(aes(colour = habitat_type,
+  geom_linerange(aes(colour = group,
                      x = facet, y = predicted,
                      ymin = conf.low,
                      ymax = conf.high),
                  position = position_dodge(width = 0.5)) +
   geom_point(shape = 21, colour = "black", size = 3,
-             aes(y = predicted, x = facet, fill = habitat_type),
+             aes(y = predicted, x = facet, fill = group),
              position = position_dodge(width = 0.5)) +
 
   # scale_y_continuous(breaks = seq(0, 0.6, 0.1)) +
@@ -115,7 +152,7 @@ p <- pres %>%
     x = "Season",
     y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
   )
-# p
+p
 
 qs::qsave(p, file = here("data-saved",
                          "predicted-plots",
