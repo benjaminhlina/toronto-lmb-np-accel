@@ -27,6 +27,18 @@ dat <- qread(here("data-saved",
 
 glimpse(dat)
 # look at data structure
+np_sum <- dat %>%
+  filter(common_name_e == "Northern Pike") %>%
+  group_by(season, day_night, habitat_type) %>%
+  summarise(
+    n = n()
+  ) %>%
+  ungroup() %>%
+  filter(habitat_type != is.na(habitat_type) &
+           season != is.na(season))
+
+np_sum %>%
+  print(n = 80)
 
 
 np <- dat %>%
@@ -37,6 +49,11 @@ np <- dat %>%
     ),
     habitat_type = factor(habitat_type)
   )
+  group_by(season, day_night, habitat_type) %>%
+  filter(
+    n() > 2
+  ) %>%
+  ungroup()
 
 
 hist(np$mean_accel)
@@ -61,8 +78,9 @@ glimpse(np)
 # ---- start our models for np ----
 
 m <- glmmTMB(mean_accel ~ habitat_type * season  * day_night +
-               (1 | animal_id) +
-               ar1(season + 0 | animal_id),
+               (1 | animal_id)
+               # ar1(season + 0 | animal_id)
+             ,
              data = np,
              family = lognormal(link = "log"),
              control = glmmTMBControl(optimizer = optim,
@@ -71,7 +89,7 @@ m <- glmmTMB(mean_accel ~ habitat_type * season  * day_night +
 
 
 m1 <- update(m, . ~ habitat_type +
-               (1 | animal_id),  REML = FALSE)
+               (1 | animal_id), REML = FALSE)
 
 m2 <- update(m, . ~ season +
                (1 | animal_id) ,
