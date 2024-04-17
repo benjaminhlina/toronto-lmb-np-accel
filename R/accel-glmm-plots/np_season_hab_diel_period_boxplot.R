@@ -54,8 +54,8 @@ p <- ggplot() +
   geom_boxplot(data = np, aes(x = day_night, fill = habitat_type,
                                   y = mean_accel),
                outlier.shape = NA) +
-  scale_y_continuous(breaks = seq(0, 1.0, 0.25)) +
-  coord_cartesian(ylim = c(0, 1)) +
+  scale_y_continuous(breaks = seq(0, 1.25, 0.25)) +
+  coord_cartesian(ylim = c(0, 1.25)) +
   theme_bw() +
   lemon::facet_rep_wrap(.~ season, repeat.tick.labels = TRUE) +
   scale_fill_viridis_d(name = "Habitat Type",
