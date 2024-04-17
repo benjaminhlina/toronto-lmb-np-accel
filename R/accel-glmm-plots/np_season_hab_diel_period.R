@@ -130,6 +130,9 @@ p <- pres %>%
     y = expression(paste("Mean Acceleration (m ", s^-2, ")"))
   )
 
+
+p
+
 qs::qsave(p, file = here("data-saved",
                          "predicted-plots",
                          "np_season_hab_dp_plot.qs"))
