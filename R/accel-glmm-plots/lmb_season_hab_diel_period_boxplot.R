@@ -31,15 +31,30 @@ dat <- dat %>%
   filter(habitat_type != is.na(habitat_type))
 # look at data structure
 
+lmb_sum <- lmb %>%
+  group_by(season, day_night, habitat_type) %>%
+  summarise(
+    n = n()
+  ) %>%
+  ungroup()
+
+lmb_sum %>%
+  print(n = 64)
 
 lmb <- dat %>%
   filter(common_name_e == "Largemouth Bass") %>%
+  group_by(season, day_night, habitat_type) %>%
+  filter(
+    n() > 2
+  ) %>%
+  ungroup() %>%
   mutate(
     season = factor(season,
                     levels = c("Fall", "Winter", "Spring", "Summer")
     ),
     habitat_type = factor(habitat_type)
   )
+
 
 
 # tp <- test_predictions(m, terms = c("season", "habitat_type", "day_night"))
