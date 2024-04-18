@@ -78,7 +78,7 @@ glimpse(np)
 # ---- start our models for np ----
 
 m <- glmmTMB(mean_accel ~ habitat_type * season  * day_night +
-               (1 | animal_id)
+               (1 | animal_id),
                # ar1(season + 0 | animal_id)
              ,
              data = np,
